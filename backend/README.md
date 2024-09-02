@@ -6,6 +6,11 @@
 * [Poetry](https://python-poetry.org/) for Python package and environment management.
 
 ## Local Development
+* Create a `.env` file for local development.  You can copy the `.env.example` file in the project root to get started:
+
+```bash
+cp .env.example .env
+```
 
 * Start the stack with Docker Compose:
 
