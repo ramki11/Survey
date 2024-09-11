@@ -12,7 +12,8 @@
       "args": ["app.main:app", "--reload"],
       "cwd": "${workspaceFolder}/backend",
       "jinja": true,
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "python": "${workspaceFolder}/backend/.venv/bin/python"
     },
     {
       "name": "Debug Frontend: Launch Chrome against http://localhost:5173",
