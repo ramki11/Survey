@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app import crud
+import app.services.inquiries as inquiries_service
 from app.api.deps import SessionDep
 from app.models import Inquiry, InquiryCreate, InquiryPublic
 
@@ -12,7 +12,9 @@ def create_inquiry(*, session: SessionDep, inquiry_in: InquiryCreate) -> Inquiry
     """
     Create new inquiry.
     """
-    inquiry = crud.get_inquiry_by_text(session=session, text=inquiry_in.text)
+    inquiry = inquiries_service.get_inquiry_by_text(
+        session=session, text=inquiry_in.text
+    )
     if inquiry:
         raise HTTPException(
             status_code=400,
