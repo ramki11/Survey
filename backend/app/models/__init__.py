@@ -1,4 +1,4 @@
-from .inquiries import Inquiry, InquiryPublic, InquiryCreate
+from .inquiry import Inquiry, InquiryPublic, InquiryCreate
 
 from .deprecated_models import (
     Item,
