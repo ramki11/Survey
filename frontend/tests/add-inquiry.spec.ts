@@ -31,6 +31,7 @@ test.describe('AddInquiry Component', () => {
     await page.click('button[type="submit"]');
     await expect(page.locator('text=Inquiry can not be greater than 255 characters.')).toBeVisible();
   });
+
   test('should show capitalization error', async ({ page }) => {
     await page.goto('/inquiries');
     await page.click('button[id="add-inquiry-show-modal"]')
@@ -38,6 +39,7 @@ test.describe('AddInquiry Component', () => {
     await page.click('button[type="submit"]');
     await expect(page.locator('text=Inquiry must start with a capital letter.')).toBeVisible();
   });
+
   test('should not allow duplicate inquiries', async ({ page }) => {
     await page.goto('/inquiries');
     await page.click('button[id="add-inquiry-show-modal"]')
