@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 import app.services.users as users_service
 from app.core.security import verify_password
