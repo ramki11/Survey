@@ -13,7 +13,7 @@ Important:
 """
 
 from .auth import Message, NewPassword, Token, TokenPayload, UpdatePassword
-from .inquiry import Inquiry, InquiryCreate, InquiryPublic
+from .inquiry import Inquiry, InquiryCreate, InquiryPublic, InquriesPublic
 from .item import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate
 from .user import (
     User,
@@ -37,6 +37,8 @@ __all__ = [
     "Inquiry",
     "InquiryCreate",
     "InquiryPublic",
+    "InquiryPublic",
+    "InquriesPublic",
     # item model
     "Item",
     "ItemCreate",
