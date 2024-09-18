@@ -1,5 +1,6 @@
 import uuid
-from sqlmodel import Session, select, func
+
+from sqlmodel import Session, func, select
 
 from app.models import Inquiry, InquiryCreate
 

@@ -3,8 +3,8 @@ import string
 
 from sqlmodel import Session
 
-from app.services import inquiries as inquiries_service
 from app.models import Inquiry, InquiryCreate
+from app.services import inquiries as inquiries_service
 
 
 def create_random_inquiry(db: Session) -> Inquiry:
