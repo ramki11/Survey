@@ -53,7 +53,7 @@ adminer                  survey-adminer-1
 schickling/mailcatcher   survey-mailcatcher-1
 survey_frontend:latest   survey-frontend-1
 postgres:12              survey-db-1
-traefik:3.0              survey-proxy-1```
+traefik:3.0              survey-proxy-1
 ```
 
 You can verify by opening up Docker Desktop or running the following in terminal:
