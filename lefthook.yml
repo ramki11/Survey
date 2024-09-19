@@ -9,5 +9,7 @@ pre-commit:
     backend-check:
       root: "backend/"  
       glob: "*.py"
-      run: poetry run ruff check --select I --fix {staged_files} && poetry run ruff format {stage_files}
+      run: |
+        poetry run ruff check --select I --fix {staged_files}
+        poetry run ruff format {staged_files}
       stage_fixed: true
