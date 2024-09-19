@@ -1,5 +1,5 @@
 pre-commit:
-  # parallel: true
+  parallel: true
   commands:
     frontend-check-biome:
       root: "frontend/"
