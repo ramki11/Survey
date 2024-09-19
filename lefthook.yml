@@ -6,14 +6,8 @@ pre-commit:
       glob: "*.{js,ts,jsx,tsx}"
       run: npm run lint {staged_files}
       stage_fixed: true
-    backend-lint:
+    backend-check:
       root: "backend/"  
       glob: "*.py"
-      run: poetry run ruff check --select I --fix {staged_files}
+      run: poetry run ruff check --select I --fix {staged_files} && poetry run ruff format {stage_files}
       stage_fixed: true
-    backend-format:
-      root: "backend/"
-      glob: "*.py"
-      run: poetry run ruff format {stage_files}
-      stage_fixed: true
-
