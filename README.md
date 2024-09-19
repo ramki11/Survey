@@ -151,7 +151,7 @@ poetry env info
 
 One this setup is complete, open the **Run and Debug** panel in Visual Studio Code and select **Debug Backend**.
 
-You can also run both of these debuggers simultaneously by selecting **Run Frontend and Backend**.
+You can also run both of these debuggers simultaneously by selecting **Debug Frontend and Backend**.
 
 ### Testing
 Coming soon..
