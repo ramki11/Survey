@@ -112,3 +112,8 @@ export type ValidationError = {
   msg: string
   type: string
 }
+export interface Question {
+  id: string;
+  text: string;
+  responses: string[];
+}
