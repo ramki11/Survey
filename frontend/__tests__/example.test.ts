@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
+
 const inquiryURL = "http://localhost/api/v1/inquiries"
 
 const handlers = [
@@ -20,7 +21,9 @@ beforeAll(() => {
 afterAll(() => {
   server.close()
 })
-
+test("TextEncoder is defined", () => {
+  expect(() => new TextEncoder()).not.toThrow()
+})
 describe("API requests", () => {
   test("GET /items returns data", async () => {
     const response = await fetch(inquiryURL)
