@@ -20,7 +20,6 @@ const config: Config = {
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
-  testEnvironment: "jsdom",
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   // collectCoverageFrom: undefined,
@@ -146,8 +145,8 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: 'node',
   // Options that will be passed to the testEnvironment
+  testEnvironment: "jest-fixed-jsdom",
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
