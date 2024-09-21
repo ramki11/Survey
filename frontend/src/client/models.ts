@@ -34,6 +34,8 @@ export type ItemsPublic = {
 };
 
 export interface InquiryCreate {
+  id?: string | null
+  title?: string | null
   text: string;
 }
 
