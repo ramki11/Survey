@@ -8,8 +8,7 @@
     "build": "tsc && vite build",
     "lint": "biome check --write --staged --no-errors-on-unmatched --files-ignore-unknown=true ./",
     "preview": "vite preview",
-    "test": "jest",
-    "testEnvironment": "jsdom"
+    "test": "jest"
   },
   "dependencies": {
     "@chakra-ui/icons": "2.1.1",

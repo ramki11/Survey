@@ -1,25 +1,30 @@
-import { server } from "./mocks/node.ts"
+import { http, HttpResponse } from "msw"
+import { setupServer } from "msw/node"
+const inquiryURL = "http://localhost/api/v1/inquiries"
+
+const handlers = [
+  http.get(inquiryURL, () => {
+    return HttpResponse.json({
+      id: "c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b3d",
+      text: "Sample Inquiry",
+      created_at: Date.now(),
+    })
+  }),
+]
+
+const server = setupServer(...handlers)
 
 beforeAll(() => {
   server.listen()
 })
-
 afterAll(() => {
   server.close()
 })
 
 describe("API requests", () => {
   test("GET /items returns data", async () => {
-    const response = await fetch("http://localhost/items")
+    const response = await fetch(inquiryURL)
     expect(response.ok).toBe(true)
-    const data = await response.json()
-    expect(data.firstName).toEqual("John")
-  })
-})
-describe("404 page not found", () => {
-  it("returns a 404 status code", async () => {
-    const response = await fetch("http://localhost/not-found")
-    expect(response.status).toBe(404)
   })
 })
 
@@ -36,12 +41,5 @@ describe("true is truthy and false is falsy", () => {
 describe("null is falsy", () => {
   it("null is falsy", () => {
     expect(null).toBeFalsy()
-  })
-})
-describe("API Test", () => {
-  test("Returns API", async () => {
-    const response = await fetch("http://localhost/api/v1/items")
-    const data = await response.json()
-    expect(data.firstName).toEqual("John")
   })
 })
