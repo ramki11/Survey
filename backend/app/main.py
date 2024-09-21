@@ -1,7 +1,5 @@
-from uuid import UUID
-
 import sentry_sdk
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from sqlmodel import Session
 from starlette.middleware.cors import CORSMiddleware
@@ -9,11 +7,6 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.main import api_router
 from app.backend_pre_start import engine
 from app.core.config import settings
-from app.models import (
-    Inquiry,
-    InquiryCreate,
-    InquiryPublic,
-)
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
@@ -42,40 +35,9 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-def get_current_user():
-    return {"is_admin": True}  # Mock admin user
-
-
 def get_session():
     with Session(engine) as session:
         yield session
-
-
-@app.put("/api/inquiries/{inquiry_id}", response_model=InquiryPublic)
-def edit_inquiry(
-    inquiry_id: UUID,
-    inquiry_update: InquiryCreate,
-    current_user: dict = Depends(get_current_user),
-    session: Session = Depends(get_session),
-):
-    if not current_user["is_admin"]:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-
-    inquiry = session.get(Inquiry, inquiry_id)
-    if not inquiry:
-        raise HTTPException(status_code=404, detail="Inquiry not found")
-
-    if inquiry.responses:
-        raise HTTPException(
-            status_code=400, detail="Cannot edit inquiry with responses"
-        )
-
-    inquiry.text = inquiry_update.text
-    session.add(inquiry)
-    session.commit()
-    session.refresh(inquiry)
-
-    return inquiry
 
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
