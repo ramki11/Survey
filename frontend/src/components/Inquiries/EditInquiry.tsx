@@ -21,9 +21,10 @@ import * as InquiriesService from "../../client/services"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
 
-interface AddInquiryProps {
+interface EditInquiryProps {
   isOpen: boolean
   onClose: () => void
+  inquiry: InquiryCreate
 }
 
 export const MIN_INQUIRY_LENGTH = 10
@@ -39,32 +40,31 @@ function isValidUnicode(str: string): boolean {
   return retval
 }
 
-const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
+const EditInquiry = ({ isOpen, onClose, inquiry }: EditInquiryProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
-  // already typed by react-hook-form https://react-hook-form.com/docs/useform#errors
-  // eslint-disable-next-line
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-    /* eslint-disable-next-line  */
   } = useForm<InquiryCreate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      text: "",
+      text: inquiry.text,
     },
   })
 
   const mutation = useMutation({
     mutationFn: (data: InquiryCreate) =>
-      InquiriesService.createInquiry({ requestBody: data }),
+      InquiriesService.updateInquiry({
+        inquiryId: inquiry.id ?? "",
+        requestBody: data,
+      }),
     onSuccess: () => {
-      showToast("Success!", "Inquiry created successfully.", "success")
-      /* eslint-disable-next-line  */
+      showToast("Success!", "Inquiry updated successfully.", "success")
       reset()
       onClose()
     },
@@ -77,7 +77,6 @@ const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
   })
 
   const onSubmit: SubmitHandler<InquiryCreate> = (data) => {
-    /* eslint-disable-next-line  */
     mutation.mutate(data)
   }
 
@@ -90,55 +89,43 @@ const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
         isCentered
       >
         <ModalOverlay />
-        {/* eslint-disable-next-line  */}
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader id="add-inquiry-show-modal">Add Inquiry</ModalHeader>
+          <ModalHeader id="edit-inquiry-show-modal">Edit Inquiry</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            {/* eslint-disable-next-line  */}
             <FormControl isInvalid={!!errors.text}>
               <FormLabel htmlFor="text">Inquiry Text</FormLabel>
               <Textarea
                 id="text"
-                data-testid="add-inquiry-text"
-                {
-                  /* eslint-disable-next-line  */
-                  ...register("text", {
-                    required: "Inquiry text is required.",
-                    minLength: {
-                      value: MIN_INQUIRY_LENGTH,
-                      message: `Inquiry must be at least ${MIN_INQUIRY_LENGTH} characters.`,
-                    },
-                    maxLength: {
-                      value: MAX_INQUIRY_LENGTH,
-                      message: `Inquiry can not be greater than ${MAX_INQUIRY_LENGTH} characters.`,
-                    },
-                    validate: (value: string) =>
-                      isValidUnicode(value) ||
-                      "Inquiry must be a valid unicode string.",
-                  })
-                }
-                placeholder="Enter the text of your inquiry."
+                data-testid="edit-inquiry-text"
+                {...register("text", {
+                  required: "Inquiry text is required.",
+                  minLength: {
+                    value: MIN_INQUIRY_LENGTH,
+                    message: `Inquiry must be at least ${MIN_INQUIRY_LENGTH} characters.`,
+                  },
+                  maxLength: {
+                    value: MAX_INQUIRY_LENGTH,
+                    message: `Inquiry can not be greater than ${MAX_INQUIRY_LENGTH} characters.`,
+                  },
+                  validate: (value: string) =>
+                    isValidUnicode(value) ||
+                    "Inquiry must be a valid unicode string.",
+                })}
+                placeholder="Edit the text of your inquiry."
               />
-
-              {
-                // errors is already typed by react-hook-form https://react-hook-form.com/docs/useform#errors */
-                /* eslint-disable */
-                errors.text && (
-                  <FormErrorMessage>{errors.text.message}</FormErrorMessage>
-                )
-                /* eslint-enable */
-              }
+              {errors.text && (
+                <FormErrorMessage>{errors.text.message}</FormErrorMessage>
+              )}
             </FormControl>
           </ModalBody>
 
           <ModalFooter gap={3}>
-            {/* eslint-disable-next-line */}
             <Button
               isLoading={isSubmitting}
               variant="primary"
               type="submit"
-              data-testid="submit-add-inquiry"
+              data-testid="submit-edit-inquiry"
             >
               Save
             </Button>
@@ -150,4 +137,4 @@ const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
   )
 }
 
-export default AddInquiry
+export default EditInquiry
