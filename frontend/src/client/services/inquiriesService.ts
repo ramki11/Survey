@@ -11,7 +11,10 @@ export interface TDataReadInquiry {
   limit?: number;
   skip?: number;
 }
-
+export interface TDataUpdateInquiry {
+  inquiryId: string;
+  requestBody: InquiryCreate;
+}
 export function createInquiry(
   data: TDataCreateInquiry
 ): CancelablePromise<InquiryPublic> {
@@ -43,3 +46,18 @@ export function readInquiries(
     },
   });
 }
+
+export function updateInquiry(
+  data: TDataUpdateInquiry
+): CancelablePromise<InquiryPublic> {
+  const { inquiryId, requestBody } = data;
+  return __request(OpenAPI, {
+    method: "PUT",
+    url: `/api/v1/inquiries/${inquiryId}/`,
+    body: requestBody,
+    mediaType: "application/json",
+    errors: {
+      422: "Validation Error",
+    },
+  });
+} 
