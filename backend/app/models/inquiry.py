@@ -2,7 +2,6 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
-from backend.app.models.response import Response
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -20,7 +19,6 @@ class Inquiry(InquiryBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     text: str = Field(min_length=10, max_length=255, unique=True)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    responses: List[Response] = Relationship(back_populates="inquiry")
 
 
 # Properties to return via API, id is always required
