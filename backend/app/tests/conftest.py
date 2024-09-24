@@ -28,7 +28,6 @@ SQLModel.metadata.create_all(engine)
 
 
 def override_get_db():
-    print("override get db")
     try:
         db = TestingSessionLocal()
         yield db
