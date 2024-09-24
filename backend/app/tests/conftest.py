@@ -2,14 +2,41 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session, delete
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import Session, SQLModel, create_engine, delete
+from sqlmodel.pool import StaticPool
 
+from app.api.deps import get_db
 from app.core.config import settings
-from app.core.db import engine, init_db
+from app.core.db import init_db
 from app.main import app
 from app.models import Item, User
 from app.tests.utils.user import authentication_token_from_email
 from app.tests.utils.utils import get_superuser_token_headers
+
+engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+
+# session has to be sqlModel not sqlAlchemy https://github.com/fastapi/sqlmodel/issues/75
+TestingSessionLocal = sessionmaker(
+    class_=Session, autocommit=False, autoflush=False, bind=engine
+)
+SQLModel.metadata.create_all(engine)
+
+
+def override_get_db():
+    print("override get db")
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
 
 
 @pytest.fixture(scope="session", autouse=True)
