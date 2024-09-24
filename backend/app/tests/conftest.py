@@ -27,7 +27,7 @@ TestingSessionLocal = sessionmaker(
 SQLModel.metadata.create_all(engine)
 
 
-def override_get_db():
+def override_get_db() -> Generator[Session, None, None]:
     try:
         db = TestingSessionLocal()
         yield db
