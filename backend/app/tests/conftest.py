@@ -1,3 +1,8 @@
+# This app injects an in-memory database for testing https://fastapi.tiangolo.com/advanced/testing-database/#file-structure
+# Because some Sessions call "exec()", they have to use sqlmodel rather than sqlalchemy https://github.com/fastapi/sqlmodel/issues/75#issuecomment-2109911909
+# Sqlmodel represents UUIDs as hex but sqlalchemy represents them as plain strings.
+# get_current_user seems to employ sqlalchemy instead of sqlmodel so we might need to mock that for future tests.
+
 from collections.abc import Generator
 
 import pytest
@@ -20,7 +25,6 @@ engine = create_engine(
     poolclass=StaticPool,
 )
 
-# session has to be sqlModel not sqlAlchemy https://github.com/fastapi/sqlmodel/issues/75
 TestingSessionLocal = sessionmaker(
     class_=Session, autocommit=False, autoflush=False, bind=engine
 )
