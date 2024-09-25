@@ -54,19 +54,16 @@ def test_create_inquiry_service_should_raise_error_when_text_parameter_is_too_lo
         create_inquiry(session=db, inquiry_in=inquiry_data)
 
 
-@pytest.mark.skip(
-    "The UNIQUE constraint error gets propagated to sqlalchemy.exc.PendingRollbackError which breaks the tests"
-)
 def test_inquiry_service_create_should_not_create_inquiry_when_inquiry_already_exists(
     db: Session,
 ) -> None:
+    text = "Repeated Inquiry"
+    inquiry_data = InquiryCreate(text=text)
+    result = create_inquiry(session=db, inquiry_in=inquiry_data)
+    assert result.text == text
+    assert result.id is not None
+    assert result.created_at is not None
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
-        text = "Test Inquiry"
-        inquiry_data = InquiryCreate(text=text)
-        result = create_inquiry(session=db, inquiry_in=inquiry_data)
-        assert result.text == text
-        assert result.id is not None
-        assert result.created_at is not None
-
-        inquiry_data = InquiryCreate(text=text)
         create_inquiry(session=db, inquiry_in=inquiry_data)
+
+    db.rollback()
