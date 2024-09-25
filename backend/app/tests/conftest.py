@@ -1,11 +1,12 @@
 import uuid
-from http.client import HTTPException
+from collections.abc import Generator
 
 import jwt
 import pytest
-from cfgv import ValidationError
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from jwt import InvalidTokenError
+from pydantic import ValidationError
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 from starlette import status
@@ -21,7 +22,7 @@ from app.tests.utils.utils import get_superuser_token_headers
 
 
 @pytest.fixture(name="db", scope="session")
-def session_fixture():
+def session_fixture() -> Generator[Session, None, None]:
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
@@ -31,8 +32,8 @@ def session_fixture():
 
 
 @pytest.fixture(name="client", scope="session")
-def client_fixture(db: Session):
-    def get_db_override():
+def client_fixture(db: Session) -> Generator[TestClient, None, None]:
+    def get_db_override() -> Session:
         return db
 
     app.dependency_overrides[get_db] = get_db_override
