@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
+from app.models.inquiry import MAX_LENGTH, MIN_LENGTH
 
 
 def test_post_request_to_inquiry_route_should_create_inquiry_when_inquiry_does_not_exist(
@@ -69,15 +70,16 @@ def test_post_request_to_inquiry_route_should_return_4xx_when_text_is_too_short(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     # pylint: disable=B311
-    data = {"text": "A" * 9}
+    data = {"text": "A" * (MIN_LENGTH - 1)}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
         headers=superuser_token_headers,
         json=data,
     )
     assert response.status_code == 422
-    assert "String should have at least 10 characters" in response.content.decode(
-        "utf-8"
+    assert (
+        f"String should have at least {MIN_LENGTH} characters"
+        in response.content.decode("utf-8")
     )
 
 
@@ -85,11 +87,14 @@ def test_post_request_to_inquiry_route_should_return_4xx_when_text_is_too_long(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     # pylint: disable=B311
-    data = {"text": "A" * 257}
+    data = {"text": "A" * (MAX_LENGTH + 1)}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
         headers=superuser_token_headers,
         json=data,
     )
     assert response.status_code == 422
-    assert "String should have at most 25" in response.content.decode("utf-8")
+    assert (
+        f"String should have at most {MAX_LENGTH} characters"
+        in response.content.decode("utf-8")
+    )

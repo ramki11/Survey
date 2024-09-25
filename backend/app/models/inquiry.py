@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sqlmodel import Field, SQLModel
 
 MIN_LENGTH = 10
-MAX_LENGTH = 256
+MAX_LENGTH = 255
 
 
 # Shared properties
