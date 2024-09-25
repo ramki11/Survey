@@ -27,7 +27,6 @@ def test_post_request_to_inquiry_route_should_return_4xx_new_inquiry_when_inquir
 ) -> None:
     inquiry_text = "Do they -- just like me -- long to be close to you?"
 
-    # pylint: disable=B311
     data = {"text": inquiry_text}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
@@ -55,7 +54,6 @@ def test_post_request_to_inquiry_route_should_return_4xx_new_inquiry_when_inquir
 def test_post_request_to_inquiry_route_should_return_4xx_when_no_text_is_supplied(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    # pylint: disable=B311
     data: dict[str, str] = {}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
@@ -69,7 +67,6 @@ def test_post_request_to_inquiry_route_should_return_4xx_when_no_text_is_supplie
 def test_post_request_to_inquiry_route_should_return_4xx_when_text_is_too_short(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    # pylint: disable=B311
     data = {"text": "A" * (MIN_LENGTH - 1)}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
@@ -86,7 +83,6 @@ def test_post_request_to_inquiry_route_should_return_4xx_when_text_is_too_short(
 def test_post_request_to_inquiry_route_should_return_4xx_when_text_is_too_long(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    # pylint: disable=B311
     data = {"text": "A" * (MAX_LENGTH + 1)}
     response = client.post(
         f"{settings.API_V1_STR}/inquiries/",
