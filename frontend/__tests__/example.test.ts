@@ -25,6 +25,7 @@ afterAll(() => {
 
 describe("API requests", () => {
   test("GET /items returns data", async () => {
+    // eslint-disable-line
     const response = await fetch(inquiryURL) // eslint-disable-line
     expect(response.ok).toBe(true)
   })
