@@ -25,8 +25,7 @@ def test_getInquiryService_whenCalledWithInvalidId_shouldRaiseException(
         get_inquiry_by_id(session=db, inquiry_id="12345")  # ruff: noqa
 
     with pytest.raises(ValueError, match=r"Id must be a valid UUID"):
-        # ruff: noqa
-        get_inquiry_by_id(session=db, inquiry_id="id")
+        get_inquiry_by_id(session=db, inquiry_id="id")  # noqa
 
 
 def test_getInquiryService_whenCalledWithExistentId_shouldReturnMatchingInquiry(
