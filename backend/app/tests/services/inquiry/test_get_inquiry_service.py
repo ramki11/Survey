@@ -7,7 +7,7 @@ from app.models import Inquiry
 from app.services.inquiries import get_inquiry_by_id
 
 
-@pytest.fixture(name="single_inquiry", scope="module")
+@pytest.fixture(name="single_inquiry", scope="function")
 def fixture_single_inquiry(db: Session) -> Inquiry:
     single_inquiry = Inquiry(text="How's your work-life balance?")
     db.add(single_inquiry)
