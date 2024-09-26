@@ -21,19 +21,19 @@ def test_getInquiryService_whenCalledWithInvalidId_shouldRaiseException(
     with pytest.raises(ValueError, match=r"Id must be a valid UUID"):
         get_inquiry_by_id(
             session=db,
-            inquiry_id=12345,  # ruff: noqa
+            inquiry_id=12345,  # noqa
         )
 
     with pytest.raises(ValueError, match=r"Id must be a valid UUID"):
         get_inquiry_by_id(
             session=db,
-            inquiry_id="12345",  # ruff: noqa
+            inquiry_id="12345",  # noqa
         )
 
     with pytest.raises(ValueError, match=r"Id must be a valid UUID"):
         get_inquiry_by_id(
             session=db,
-            inquiry_id="id",  # ruff: noqa
+            inquiry_id="id",  # noqa
         )
 
 
