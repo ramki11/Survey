@@ -43,11 +43,11 @@ def client_fixture(db: Session) -> Generator[TestClient, None, None]:
     app.dependency_overrides.clear()
 
 
-# Clear specified tables after running each test module
-@pytest.fixture(scope="module", autouse=True)
+# Clear specified tables after running each test function
+@pytest.fixture(scope="function", autouse=True)
 def clear_tables_after_tests(db: Session) -> Generator[None, None, None]:
-    tables_to_clear = [Inquiry]
     yield
+    tables_to_clear = [Inquiry]
     for table in tables_to_clear:
         statement = select(table)
         results = db.exec(statement).all()
