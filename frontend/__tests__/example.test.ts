@@ -1,4 +1,4 @@
-/* eslint-disable-next-line */
+/* eslint-disable */
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
 
@@ -25,7 +25,6 @@ afterAll(() => {
 
 describe("API requests", () => {
   test("GET /items returns data", async () => {
-    /* eslint-disable-next-line */
     const response = await fetch(inquiryURL)
     expect(response.ok).toBe(true)
   })
