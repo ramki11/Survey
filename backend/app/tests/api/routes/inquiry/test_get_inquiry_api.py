@@ -45,20 +45,12 @@ def test_getInquiryAPI_whenCalledWithNonExistentId_shouldReturnNotFound(
 def test_getInquiryAPI_whenCalledWithInvalidIdType_shouldReturnBadRequest(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    id = "12345"
-    response = client.get(
-        f"{settings.API_V1_STR}/inquiries/{id}",
-        headers=superuser_token_headers,
-    )
-    assert response.status_code == 422
-    content = response.json()
-    assert "detail" in content
-
-    id = 12345
-    response = client.get(
-        f"{settings.API_V1_STR}/inquiries/{id}",
-        headers=superuser_token_headers,
-    )
-    assert response.status_code == 422
-    content = response.json()
-    assert "detail" in content
+    invalid_inquiry_ids = ["12345", "abcde"]
+    for inquiry_id in invalid_inquiry_ids:
+        response = client.get(
+            f"{settings.API_V1_STR}/inquiries/{inquiry_id}",
+            headers=superuser_token_headers,
+        )
+        assert response.status_code == 422
+        content = response.json()
+        assert content["detail"][0]["type"] == "uuid_parsing"
