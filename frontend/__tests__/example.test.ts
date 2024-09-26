@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
-// codacy-ignore Unencrypted request over HTTP detected
+
 const inquiryURL = "http://localhost/api/v1/inquiries"
 
 const handlers = [
@@ -24,10 +24,11 @@ afterAll(() => {
 })
 
 describe("API requests", () => {
+  // eslint-disable-line no-eval
   test("GET /items returns data", async () => {
-    // eslint-disable-line
-    const response = await fetch(inquiryURL) // eslint-disable-line
-    expect(response.ok).toBe(true)
+    // eslint-disable-line no-eval
+    const response = await fetch(inquiryURL) // eslint-disable-line no-eval
+    expect(response.ok).toBe(true) // eslint-disable-line no-eval
   })
 })
 
