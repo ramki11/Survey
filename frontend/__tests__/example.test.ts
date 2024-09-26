@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
-
+// codacy-ignore Unencrypted request over HTTP detected
 const inquiryURL = "http://localhost/api/v1/inquiries"
 
 const handlers = [
