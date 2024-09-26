@@ -1,11 +1,9 @@
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
-from sqlmodel import Session
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
-from app.backend_pre_start import engine
 from app.core.config import settings
 
 
@@ -33,11 +31,5 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
-
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

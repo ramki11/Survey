@@ -59,12 +59,8 @@ def read_inquiry(session: SessionDep, inquiry_id: uuid.UUID) -> Inquiry:
 def edit_inquiry(
     inquiry_id: uuid.UUID,
     inquiry_update: InquiryCreate,
-    current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
-    if not current_user["is_admin"]:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-
     inquiry = inquiries_service.get_inquiry_by_id(
         session=session, inquiry_id=inquiry_id
     )
@@ -75,7 +71,6 @@ def edit_inquiry(
         raise HTTPException(
             status_code=400, detail="Cannot edit inquiry with responses"
         )
-
     # Update the inquiry with the provided data
     inquiry.text = inquiry_update.text
     session.commit()
