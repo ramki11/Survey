@@ -24,9 +24,9 @@ afterAll(() => {
 })
 
 describe("API requests", () => {
-  /* eslint-disable-next-line no-unused-expressions */
   test("GET /items returns data", async () => {
-    const response = await fetch(inquiryURL)
+    // eslint-disable-line
+    const response = await fetch(inquiryURL) // eslint-disable-line
     expect(response.ok).toBe(true)
   })
 })
