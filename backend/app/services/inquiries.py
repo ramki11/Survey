@@ -28,6 +28,10 @@ def get_inquiry_by_id(*, session: Session, inquiry_id: UUID) -> Inquiry | None:
 def get_inquiries(
     *, session: Session, skip: int = 0, limit: int = 100
 ) -> list[Inquiry]:
+    if skip < 0:
+        raise ValueError("Invalid value for 'skip': it must be non-negative")
+    if limit < 0:
+        raise ValueError("Invalid value for 'limit': it must be non-negative")
     statement = select(Inquiry).offset(skip).limit(limit)
     result = session.exec(statement).all()
     return list(result)
