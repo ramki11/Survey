@@ -1,7 +1,6 @@
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
 
-/* eslint-disable-next-line */
 const inquiryURL = "http://localhost/api/v1/inquiries"
 
 const handlers = [
@@ -13,7 +12,7 @@ const handlers = [
     })
   }),
 ]
-/* eslint-disable-next-line */
+
 const server = setupServer(...handlers)
 
 beforeAll(() => {
@@ -23,15 +22,13 @@ afterAll(() => {
   server.close()
 })
 
-/* eslint-disable-next-line */
 describe("API requests", () => {
   test("GET /items returns data", async () => {
-    /* eslint-disable-next-line */
     const response = await fetch(inquiryURL)
     expect(response.ok).toBe(true)
   })
 })
-/* eslint-disable-next-line */
+
 describe("true is truthy and false is falsy", () => {
   it("true is truthy", () => {
     expect(true).toBe(true)
@@ -41,7 +38,7 @@ describe("true is truthy and false is falsy", () => {
     expect(false).toBe(false)
   })
 })
-/* eslint-disable-next-line */
+
 describe("null is falsy", () => {
   it("null is falsy", () => {
     expect(null).toBeFalsy()
