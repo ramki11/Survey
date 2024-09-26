@@ -45,7 +45,7 @@ def client_fixture(db: Session) -> Generator[TestClient, None, None]:
 
 # Clear specified tables after running each test module
 @pytest.fixture(scope="module", autouse=True)
-def clear_tables_after_tests(db: Session) -> None:
+def clear_tables_after_tests(db: Session) -> Generator[None, None, None]:
     tables_to_clear = [Inquiry]
     yield
     for table in tables_to_clear:
