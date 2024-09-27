@@ -1,3 +1,4 @@
+import uuid
 from uuid import UUID
 
 from sqlmodel import Session, func, select
