@@ -45,25 +45,14 @@ export function readInquiries(
 }
 
 
-export async function updateInquiry(updatedInquiry: InquiryPublic): Promise<InquiryPublic> {
-  try {
-    const response = await fetch(`/api/inquiries/${updatedInquiry.id}`, { // Adjust the endpoint if needed
-      method: 'PUT', // Or 'PATCH', depending on your backend implementation
-      headers: {
-        'Content-Type': 'application/json',
-        // Include any necessary authentication headers here
-      },
-      body: JSON.stringify(updatedInquiry),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update inquiry');
-    }
-
-    const updatedData = await response.json();
-    return updatedData;
-  } catch (error) {
-    console.error('Error updating inquiry:', error);
-    throw error; // Re-throw so the error can be handled by your mutation's onError
-  }
+export function updateInquiry(updatedInquiry: InquiryPublic): CancelablePromise<InquiryPublic> {
+  return __request(OpenAPI, {
+    method: 'PUT', // Or 'PATCH', depending on your backend implementation
+    url: `/api/v1/inquiries/${updatedInquiry.id}`, // Adjust the endpoint if needed
+    body: updatedInquiry,
+    mediaType: 'application/json',
+    errors: {
+      422: 'Validation Error',
+    },
+  });
 }

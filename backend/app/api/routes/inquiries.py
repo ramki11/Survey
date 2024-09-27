@@ -6,8 +6,13 @@ from sqlmodel import Session
 
 import app.services.inquiries as inquiries_service
 from app.api.deps import SessionDep
-from app.core.db import get_session
-from app.models import Inquiry, InquiryCreate, InquiryPublic, InquriesPublic
+from app.models import (
+    Inquiry,
+    InquiryCreate,
+    InquiryPublic,
+    InquiryUpdate,
+    InquriesPublic,
+)
 from app.services import inquiries as inquiries_service
 
 router = APIRouter()
@@ -55,24 +60,18 @@ def read_inquiry(session: SessionDep, inquiry_id: uuid.UUID) -> Inquiry:
     return inquiry
 
 
-@router.put("/api/inquiries/{inquiry_id}", response_model=InquiryPublic)
-def edit_inquiry(
-    inquiry_id: uuid.UUID,
-    inquiry_update: InquiryCreate,
-    session: Session = Depends(get_session),
-):
+@router.put("/{inquiry_id}", response_model=InquiryPublic)
+def update_inquiry(
+    session: SessionDep, inquiry_id: uuid.UUID, inquiry_update: InquiryUpdate
+) -> Inquiry:
+    """
+    Update an inquiry.
+    """
     inquiry = inquiries_service.get_inquiry_by_id(
         session=session, inquiry_id=inquiry_id
     )
     if not inquiry:
         raise HTTPException(status_code=404, detail="Inquiry not found")
-
-    if inquiry.responses:
-        raise HTTPException(
-            status_code=400, detail="Cannot edit inquiry with responses"
-        )
-    # Update the inquiry with the provided data
-    inquiry.text = inquiry_update.text
-    session.commit()
-
-    return inquiry
+    return inquiries_service.edit_inquiry(
+        session=session, inquiry_id=inquiry_id, inquiry_update=inquiry_update
+    )

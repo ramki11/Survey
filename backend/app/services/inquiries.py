@@ -36,3 +36,14 @@ def get_inquiries(
 def count_inquiries(*, session: Session) -> int:
     statement = select(func.count()).select_from(Inquiry)
     return session.exec(statement).one()
+
+
+def edit_inquiry(
+    *, session: Session, inquiry_id: uuid.UUID, inquiry_update: InquiryCreate
+) -> Inquiry:
+    db_inquiry = get_inquiry_by_id(session=session, inquiry_id=inquiry_id)
+    db_inquiry.text = inquiry_update.text
+    session.add(db_inquiry)
+    session.commit()
+    session.refresh(db_inquiry)
+    return db_inquiry
