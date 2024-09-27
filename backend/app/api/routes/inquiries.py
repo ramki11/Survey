@@ -2,7 +2,6 @@ import uuid
 
 from fastapi import APIRouter, HTTPException
 
-import app.services.inquiries as inquiries_service
 from app.api.deps import SessionDep
 from app.models import (
     Inquiry,
