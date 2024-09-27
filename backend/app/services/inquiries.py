@@ -1,4 +1,3 @@
-import uuid
 from uuid import UUID
 
 from sqlmodel import Session, func, select
@@ -44,9 +43,12 @@ def count_inquiries(*, session: Session) -> int:
 
 
 def edit_inquiry(
-    *, session: Session, inquiry_id: uuid.UUID, inquiry_update: InquiryUpdate
+    *, session: Session, inquiry_id: UUID, inquiry_update: InquiryUpdate
 ) -> Inquiry:
     db_inquiry = get_inquiry_by_id(session=session, inquiry_id=inquiry_id)
+    if db_inquiry is None:
+        raise ValueError(f"Inquiry with id {inquiry_id} does not exist")
+
     if (inquiry_update.text is not None) and (inquiry_update.text != db_inquiry.text):
         db_inquiry.text = inquiry_update.text
         session.add(db_inquiry)
