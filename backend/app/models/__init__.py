@@ -46,7 +46,7 @@ __all__ = [
     "InquiryPublic",
     "InquiryPublic",
     "InquriesPublic",
-    "InquriyUpdate",
+    "InquiryUpdate",
     # theme model
     "Theme",
     "ThemeCreate",
