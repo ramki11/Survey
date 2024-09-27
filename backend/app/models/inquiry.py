@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, SQLModel
 
 MIN_LENGTH = 10
 MAX_LENGTH = 256
