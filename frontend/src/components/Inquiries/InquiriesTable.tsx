@@ -1,4 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons" // Import the EditIcon
+import { EditIcon } from "@chakra-ui/icons"
 import {
   Button,
   FormControl,
@@ -32,10 +32,8 @@ import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
 
 // Dayjs Configurations
-/* eslint-disable */
 dayjs.extend(utc)
 dayjs.extend(timezone)
-/* eslint-enable */
 
 const InquiriesTable = () => {
   // Format ISO date to the user's timezone.
@@ -43,14 +41,12 @@ const InquiriesTable = () => {
   function formatDate(date: string): string {
     const invalidDateMessage = "Invalid Date"
     if (typeof date !== "string") return invalidDateMessage
-    // Unsafe access to 'error' typed value is handled by dayjs' isValid function
-    /* eslint-disable */
+
     const parsedDate = dayjs.utc(date)
     const userTimezone = dayjs.tz.guess()
     return parsedDate.isValid()
       ? parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
       : invalidDateMessage
-    /* eslint-enable */
   }
 
   function getInquiriesQueryOptions() {
@@ -76,20 +72,19 @@ const InquiriesTable = () => {
   const toast = useToast()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null)
+  const [selectedInquiry, setSelectedInquiry] = useState<InquiryPublic | null>(
+    null,
+  )
   const [editText, setEditText] = useState("")
 
   const updateInquiryMutation = useMutation({
     mutationFn: async (updatedInquiry: InquiryPublic) => {
-      // Use the correct type here
       return await InquiriesService.updateInquiry(updatedInquiry)
     },
     onSuccess: () => {
-      // Access the updated data if needed
       queryClient.invalidateQueries({ queryKey: ["inquiries"] })
       toast({
         title: "Inquiry updated successfully",
-        // You could potentially use data here to show more specific success information
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -97,7 +92,7 @@ const InquiriesTable = () => {
       onClose()
     },
     onError: (error: any) => {
-      console.error("Error updating inquiry:", error) // Log the error for debugging
+      console.error("Error updating inquiry:", error)
 
       toast({
         title: "Error updating inquiry",
@@ -109,7 +104,7 @@ const InquiriesTable = () => {
     },
   })
 
-  const handleEditClick = (inquiry: any) => {
+  const handleEditClick = (inquiry: InquiryPublic) => {
     setSelectedInquiry(inquiry)
     setEditText(inquiry.text)
     onOpen()
@@ -132,7 +127,7 @@ const InquiriesTable = () => {
             <Tr>
               <Th>Text</Th>
               <Th>Created At</Th>
-              <Th>Actions</Th> {/* Added Actions column */}
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           {isPending ? (
@@ -164,7 +159,9 @@ const InquiriesTable = () => {
                   </Tr>
                 ))
               ) : (
-                <></>
+                <Tr>
+                  <Td colSpan={3}>No inquiries found</Td>
+                </Tr>
               )}
             </Tbody>
           )}
