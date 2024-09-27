@@ -61,11 +61,15 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
     mutationFn: inquiry?.id
       ? (data: InquiryCreate) =>
           InquiriesService.updateInquiry({
-            inquiryId: inquiry.id ?? "",
-            requestBody: data,
+            ...data,
+            id: inquiry.id ?? "",
+            created_at: "",
           })
       : (data: InquiryCreate) =>
-          InquiriesService.createInquiry({ requestBody: data }),
+          InquiriesService.createInquiry({
+            ...data,
+            requestBody: data,
+          }),
     onSuccess: () => {
       showToast(
         "Success!",

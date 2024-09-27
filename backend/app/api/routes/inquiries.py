@@ -1,8 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from sqlmodel import Session
+from fastapi import APIRouter, HTTPException
 
 import app.services.inquiries as inquiries_service
 from app.api.deps import SessionDep
