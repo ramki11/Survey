@@ -21,8 +21,8 @@ import * as InquiriesService from "../../client/services"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
 
-const MIN_LENGTH = 10
-const MAX_LENGTH = 256
+export const MIN_INQUIRY_LENGTH = 10
+export const MAX_INQUIRY_LENGTH = 256
 
 function isValidUnicode(str: string): boolean {
   let retval: boolean
@@ -34,13 +34,13 @@ function isValidUnicode(str: string): boolean {
   return retval
 }
 
-interface InquiryModalProps {
+interface InquiryFormProps {
   isOpen: boolean
   onClose: () => void
-  inquiry?: InquiryCreate
+  inquiry?: InquiryCreate // Make 'inquiry' optional to handle both add and edit
 }
 
-const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
+const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
@@ -53,27 +53,26 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      text: inquiry?.text ?? "",
+      text: inquiry?.text ?? "", // Use existing inquiry text if available
     },
   })
 
+  const isEditing = !!inquiry // Check if we're editing an existing inquiry
+
   const mutation = useMutation({
-    mutationFn: inquiry?.id
+    mutationFn: isEditing
       ? (data: InquiryCreate) =>
           InquiriesService.updateInquiry({
             ...data,
-            id: inquiry.id ?? "",
-            created_at: "",
+            id: inquiry!.id, // 'inquiry' is guaranteed to exist here
+            created_at: "", // You might need to handle this differently
           })
       : (data: InquiryCreate) =>
-          InquiriesService.createInquiry({
-            ...data,
-            requestBody: data,
-          }),
+          InquiriesService.createInquiry({ requestBody: data }),
     onSuccess: () => {
       showToast(
         "Success!",
-        inquiry?.id
+        isEditing
           ? "Inquiry updated successfully."
           : "Inquiry created successfully.",
         "success",
@@ -105,10 +104,10 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
           <ModalHeader
             id={
-              inquiry?.id ? "edit-inquiry-show-modal" : "add-inquiry-show-modal"
+              isEditing ? "edit-inquiry-show-modal" : "add-inquiry-show-modal"
             }
           >
-            {inquiry?.id ? "Edit Inquiry" : "Add Inquiry"}
+            {isEditing ? "Edit Inquiry" : "Add Inquiry"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -117,24 +116,24 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
               <Textarea
                 id="text"
                 data-testid={
-                  inquiry?.id ? "edit-inquiry-text" : "add-inquiry-text"
+                  isEditing ? "edit-inquiry-text" : "add-inquiry-text"
                 }
                 {...register("text", {
                   required: "Inquiry text is required.",
                   minLength: {
-                    value: MIN_LENGTH,
-                    message: `Inquiry must be at least ${MIN_LENGTH} characters.`,
+                    value: MIN_INQUIRY_LENGTH,
+                    message: `Inquiry must be at least ${MIN_INQUIRY_LENGTH} characters.`,
                   },
                   maxLength: {
-                    value: MAX_LENGTH,
-                    message: `Inquiry can not be greater than ${MAX_LENGTH} characters.`,
+                    value: MAX_INQUIRY_LENGTH,
+                    message: `Inquiry can not be greater than ${MAX_INQUIRY_LENGTH} characters.`,
                   },
                   validate: (value: string) =>
                     isValidUnicode(value) ||
                     "Inquiry must be a valid unicode string.",
                 })}
                 placeholder={
-                  inquiry?.id
+                  isEditing
                     ? "Edit the text of your inquiry."
                     : "Enter the text of your inquiry."
                 }
@@ -151,7 +150,7 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
               variant="primary"
               type="submit"
               data-testid={
-                inquiry?.id ? "submit-edit-inquiry" : "submit-add-inquiry"
+                isEditing ? "submit-edit-inquiry" : "submit-add-inquiry"
               }
             >
               Save
@@ -164,4 +163,4 @@ const InquiryModal = ({ isOpen, onClose, inquiry }: InquiryModalProps) => {
   )
 }
 
-export default InquiryModal
+export default InquiryForm
