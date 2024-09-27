@@ -70,16 +70,22 @@ def read_inquiry(session: SessionDep, inquiry_id: uuid.UUID) -> Inquiry:
 
 @router.put("/{inquiry_id}", response_model=InquiryPublic)
 def update_inquiry(
-    session: SessionDep, inquiry_id: uuid.UUID, inquiry_update: InquiryUpdate
+    *, session: SessionDep, inquiry_id: uuid.UUID, inquiry_update: InquiryUpdate
 ) -> Inquiry:
     """
-    Update an inquiry.
+    Update an existing inquiry.
     """
     inquiry = inquiries_service.get_inquiry_by_id(
         session=session, inquiry_id=inquiry_id
     )
     if not inquiry:
-        raise HTTPException(status_code=404, detail="Inquiry not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Inquiry not found.",
+        )
+
     return inquiries_service.edit_inquiry(
-        session=session, inquiry_id=inquiry_id, inquiry_update=inquiry_update
+        session=session,
+        inquiry_id=inquiry_id,
+        inquiry_update=inquiry_update,
     )

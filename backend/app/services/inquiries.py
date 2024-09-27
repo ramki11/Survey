@@ -3,7 +3,7 @@ from uuid import UUID
 
 from sqlmodel import Session, func, select
 
-from app.models import Inquiry, InquiryCreate
+from app.models import Inquiry, InquiryCreate, InquiryUpdate
 
 
 def create_inquiry(*, session: Session, inquiry_in: InquiryCreate) -> Inquiry:
@@ -44,11 +44,14 @@ def count_inquiries(*, session: Session) -> int:
 
 
 def edit_inquiry(
-    *, session: Session, inquiry_id: uuid.UUID, inquiry_update: InquiryCreate
+    *, session: Session, inquiry_id: uuid.UUID, inquiry_update: InquiryUpdate
 ) -> Inquiry:
     db_inquiry = get_inquiry_by_id(session=session, inquiry_id=inquiry_id)
-    db_inquiry.text = inquiry_update.text
-    session.add(db_inquiry)
-    session.commit()
-    session.refresh(db_inquiry)
-    return db_inquiry
+    if (inquiry_update.text is not None) and (inquiry_update.text != db_inquiry.text):
+        db_inquiry.text = inquiry_update.text
+        session.add(db_inquiry)
+        session.commit()
+        session.refresh(db_inquiry)
+        return db_inquiry
+    else:
+        raise ValueError("No changes were made to the inquiry")
