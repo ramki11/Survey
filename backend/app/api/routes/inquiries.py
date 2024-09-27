@@ -40,7 +40,7 @@ def get_inquries(
     if limit <= 0:
         raise HTTPException(
             status_code=400,
-            detail="Invalid value for 'limit': it must be greater than zero",
+            detail="Invalid value for 'limit': it must be non-negative",
         )
 
     count = inquiries_service.count_inquiries(session=session)
