@@ -11,10 +11,7 @@ export interface TDataReadInquiry {
   limit?: number;
   skip?: number;
 }
-export interface TDataUpdateInquiry {
-  inquiryId: string;
-  requestBody: InquiryCreate;
-}
+
 export function createInquiry(
   data: TDataCreateInquiry
 ): CancelablePromise<InquiryPublic> {
@@ -47,17 +44,26 @@ export function readInquiries(
   });
 }
 
-export function updateInquiry(
-  data: TDataUpdateInquiry
-): CancelablePromise<InquiryPublic> {
-  const { inquiryId, requestBody } = data;
-  return __request(OpenAPI, {
-    method: "PUT",
-    url: `/api/v1/inquiries/${inquiryId}/`,
-    body: requestBody,
-    mediaType: "application/json",
-    errors: {
-      422: "Validation Error",
-    },
-  });
-} 
+
+export async function updateInquiry(updatedInquiry: InquiryPublic): Promise<InquiryPublic> {
+  try {
+    const response = await fetch(`/api/inquiries/${updatedInquiry.id}`, { // Adjust the endpoint if needed
+      method: 'PUT', // Or 'PATCH', depending on your backend implementation
+      headers: {
+        'Content-Type': 'application/json',
+        // Include any necessary authentication headers here
+      },
+      body: JSON.stringify(updatedInquiry),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update inquiry');
+    }
+
+    const updatedData = await response.json();
+    return updatedData;
+  } catch (error) {
+    console.error('Error updating inquiry:', error);
+    throw error; // Re-throw so the error can be handled by your mutation's onError
+  }
+}
