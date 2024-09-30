@@ -11,7 +11,7 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
-import { formatDate } from "../../utils/date.ts"
+import { formatDate } from "../../utils/"
 
 const InquiriesTable = () => {
   function getInquiriesQueryOptions() {
