@@ -10,12 +10,12 @@ if TYPE_CHECKING:
 # Shared properties
 class ScheduledInquiryBase(SQLModel):
     inquiry_id: uuid.UUID = Field(foreign_key="inquiry.id")
-    rank: int = Field(ge=1)  # rank starts at 1
+    rank: int = Field(nullable=False)  # rank starts at 1
 
 
 # Properties to receive on ScheduledInquiry creation
-class ScheduledInquiryCreate(ScheduledInquiryBase):
-    pass
+class ScheduledInquiryCreate(SQLModel):
+    inquiry_id: uuid.UUID = Field(foreign_key="inquiry.id")
 
 
 # Database model
