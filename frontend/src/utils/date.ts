@@ -12,9 +12,11 @@ import utc from "dayjs/plugin/utc"
  *  Expected Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
 export const formatDate = (date: string): string => {
-  // Extend dayjs with required plugins
+  // dayjs plugins
+  /* eslint-disable */
   dayjs.extend(utc)
   dayjs.extend(timezone)
+  /* eslint-enable */
 
   const invalidDateMessage = "Invalid Date"
   if (typeof date !== "string") return invalidDateMessage
