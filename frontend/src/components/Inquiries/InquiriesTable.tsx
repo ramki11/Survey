@@ -25,20 +25,6 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const InquiriesTable = () => {
-  // Format ISO date to the user's timezone.
-  // ex. Sep 17, 2024 14:13 PM
-
-  function formatDate(date: string): string {
-    const invalidDateMessage = "Invalid Date"
-    if (typeof date !== "string") return invalidDateMessage
-
-    const parsedDate = dayjs.utc(date)
-    const userTimezone = dayjs.tz.guess()
-    return parsedDate.isValid()
-      ? parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
-      : invalidDateMessage
-  }
-
   function getInquiriesQueryOptions() {
     return {
       queryKey: ["inquiries"],
