@@ -15,11 +15,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
-import {
-  convertToISO8601,
-  formatISODateToUserTimezone,
-} from "../../utils/date.ts"
-import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
+import { formatDate } from "../../utils/"
 
 const InquiriesTable = () => {
   function getInquiriesQueryOptions() {
@@ -31,7 +27,7 @@ const InquiriesTable = () => {
           ...inquiries,
           data: inquiries.data.map((inquiry: InquiryPublic) => ({
             ...inquiry,
-            created_at: convertToISO8601(inquiry.created_at),
+            created_at: formatDate(inquiry.created_at),
           })),
         }
       },
