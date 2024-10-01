@@ -3,8 +3,8 @@ import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import Navbar from "../../components/Common/Navbar"
+import InquiryForm from "../../components/Inquiries/AddOrEditInquiryModal.tsx"
 import InquiriesTable from "../../components/Inquiries/InquiriesTable.tsx"
-import InquiryForm from "../../components/Inquiries/InquiryForm.tsx"
 
 // Already typed by zod library https://zod.dev/
 // eslint-disable-next-line

@@ -16,7 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
 import type { ApiError } from "../../client"
-import type { InquiryCreate } from "../../client/models"
+import type { InquiryCreate, InquiryUpdate } from "../../client/models"
 import * as InquiriesService from "../../client/services"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
@@ -34,13 +34,17 @@ function isValidUnicode(str: string): boolean {
   return retval
 }
 
-interface InquiryFormProps {
+interface AddOrEditInquiryModalProps {
   isOpen: boolean
   onClose: () => void
-  inquiry?: InquiryCreate // Make 'inquiry' optional to handle both add and edit
+  inquiry?: InquiryCreate & { id?: string } // Make 'inquiry' optional to handle both add and edit, and include 'id' property
 }
 
-const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
+const AddOrEditInquiryModal = ({
+  isOpen,
+  onClose,
+  inquiry,
+}: AddOrEditInquiryModalProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
@@ -61,10 +65,10 @@ const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
 
   const mutation = useMutation({
     mutationFn: isEditing
-      ? (data: InquiryCreate) =>
+      ? (data: InquiryUpdate) =>
           InquiriesService.updateInquiry({
             ...data,
-            id: inquiry!.id, // 'inquiry' is guaranteed to exist here
+            id: inquiry?.id!, // 'inquiry' is guaranteed to exist here
             created_at: "", // You might need to handle this differently
           })
       : (data: InquiryCreate) =>
@@ -89,7 +93,11 @@ const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
   })
 
   const onSubmit: SubmitHandler<InquiryCreate> = (data) => {
-    mutation.mutate(data)
+    if (isEditing) {
+      mutation.mutate({ ...data, id: inquiry?.id! } as InquiryUpdate)
+    } else {
+      mutation.mutate({ ...data, id: "" } as InquiryUpdate) // Provide a default id for InquiryUpdate
+    }
   }
 
   return (
@@ -107,7 +115,7 @@ const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
               isEditing ? "edit-inquiry-show-modal" : "add-inquiry-show-modal"
             }
           >
-            {isEditing ? "Edit Inquiry" : "Add Inquiry"}
+            {isEditing ? "Form Edit Inquiry" : "Add Inquiry"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -163,4 +171,4 @@ const InquiryForm = ({ isOpen, onClose, inquiry }: InquiryFormProps) => {
   )
 }
 
-export default InquiryForm
+export default AddOrEditInquiryModal

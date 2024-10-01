@@ -34,6 +34,10 @@ export type ItemsPublic = {
 };
 
 export interface InquiryCreate {
+  text: string;
+}
+
+export interface InquiryUpdate {
   id: string;
   text: string;
 }
