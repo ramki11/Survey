@@ -43,7 +43,7 @@ describe("formatISODateToUserTimezone", () => {
     jest.clearAllMocks()
   })
 
-  it("should format valid ISO date string correctly for different timezones", () => {
+  it("should format valid ISO date string correctly for different timezones when called with valid input", () => {
     for (const { timezone, expectedOutput } of timezoneTestData.timezones) {
       jest.spyOn(dayjs.tz, "guess").mockReturnValue(timezone)
       expect(formatISODateToUserTimezone(timezoneTestData.input)).toBe(
@@ -52,13 +52,13 @@ describe("formatISODateToUserTimezone", () => {
     }
   })
 
-  it("should return 'Invalid Date' for invalid ISO date string", () => {
+  it("should return 'Invalid Date' when called with invalid ISO date string", () => {
     const input = "12345"
     const expectedOutput = "Invalid Date"
     expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
   })
 
-  it("should return 'Invalid Date' for an empty string", () => {
+  it("should return 'Invalid Date' when called with an empty string", () => {
     const input = ""
     const expectedOutput = "Invalid Date"
     expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
