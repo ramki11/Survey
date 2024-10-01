@@ -8,6 +8,11 @@ export const namePattern = {
   message: "Invalid name",
 }
 
+export const isoDateTimePattern = {
+  value: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/,
+  message: "Invalid ISO date-time format",
+}
+
 export const passwordRules = (isRequired = true) => {
   const rules: any = {
     minLength: {
