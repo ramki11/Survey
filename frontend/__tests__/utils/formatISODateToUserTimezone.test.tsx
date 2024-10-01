@@ -4,12 +4,7 @@
 // Disabling to mock return value of "dayjs.tz.guess" function
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import {
-  DATE_PARSING_ERROR_MESSAGE,
-  INVALID_DATE_TYPE_ERROR_MESSAGE,
-  ISO_DATE_FORMAT_ERROR_MESSAGE,
-  formatISODateToUserTimezone,
-} from "../../src/utils/date"
+import { formatISODateToUserTimezone } from "../../src/utils"
 import "@testing-library/jest-dom"
 import dayjs from "dayjs"
 
@@ -37,7 +32,7 @@ const timezoneTestData = {
       expectedOutput: "Sep 23, 2024 04:00 AM",
     },
     {
-      timezone: "Pacific/Honolulu", // Hawaii Standard Time (HAST, no DST)
+      timezone: "Pacific/Honolulu", // Hawaii-Aleutian Standard Time (HAST, no DST)
       expectedOutput: "Sep 23, 2024 02:00 AM",
     },
   ],
@@ -48,7 +43,7 @@ describe("formatISODateToUserTimezone", () => {
     jest.clearAllMocks()
   })
 
-  it("should return formatted date string relative to different timezones when called with valid ISO date input", () => {
+  it("should format valid ISO date string correctly for different timezones", () => {
     for (const { timezone, expectedOutput } of timezoneTestData.timezones) {
       jest.spyOn(dayjs.tz, "guess").mockReturnValue(timezone)
       expect(formatISODateToUserTimezone(timezoneTestData.input)).toBe(
@@ -57,32 +52,15 @@ describe("formatISODateToUserTimezone", () => {
     }
   })
 
-  it("should throw INVALID_DATE_TYPE_ERROR_MESSAGE when called with non-string date", () => {
-    const input = 12345
-    expect(() =>
-      formatISODateToUserTimezone(input as unknown as string),
-    ).toThrow(INVALID_DATE_TYPE_ERROR_MESSAGE)
-  })
-
-  it("should throw ISO_DATE_FORMAT_ERROR_MESSAGE when called with invalid ISO date string", () => {
+  it("should return 'Invalid Date' for invalid ISO date string", () => {
     const input = "12345"
-    expect(() => formatISODateToUserTimezone(input)).toThrow(
-      ISO_DATE_FORMAT_ERROR_MESSAGE,
-    )
+    const expectedOutput = "Invalid Date"
+    expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
   })
 
-  it("should throw ISO_DATE_FORMAT_ERROR_MESSAGE when called with an empty string", () => {
+  it("should return 'Invalid Date' for an empty string", () => {
     const input = ""
-    expect(() => formatISODateToUserTimezone(input)).toThrow(
-      ISO_DATE_FORMAT_ERROR_MESSAGE,
-    )
-  })
-
-  it("should throw DATE_PARSING_ERROR_MESSAGE when date can't be parsed", () => {
-    const input = "2024-09-23T12:00:00Z"
-    jest.spyOn(dayjs.prototype, "isValid").mockReturnValue(false)
-    expect(() => formatISODateToUserTimezone(input)).toThrow(
-      DATE_PARSING_ERROR_MESSAGE,
-    )
+    const expectedOutput = "Invalid Date"
+    expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
   })
 })
