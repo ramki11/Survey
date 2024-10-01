@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.core.config import settings
-from app.models import Inquiry, InquiryCreate, ScheduledInquiryCreate
+from app.models import Inquiry, InquiryCreate
 from app.services import inquiries as inquiries_service
 from app.services import scheduled_inquiries as scheduled_inquiries_service
 
