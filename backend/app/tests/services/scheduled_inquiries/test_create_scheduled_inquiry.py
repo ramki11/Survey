@@ -1,13 +1,11 @@
 from collections.abc import Generator
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlmodel import UUID, Session
+from sqlmodel import Session
 
 from app.models import Inquiry, InquiryCreate, ScheduledInquiry
 from app.services import inquiries as inquiries_service
 from app.services import scheduled_inquiries as scheduled_inquiries_service
-from app.tests.utils.api_post import api_post
 
 
 @pytest.fixture
