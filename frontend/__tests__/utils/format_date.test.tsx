@@ -13,27 +13,27 @@ const timezoneTestData = {
   timezones: [
     {
       timezone: "America/New_York", // Eastern Daylight Time (EDT)
-      expected: "Sep 23, 2024 08:00 AM",
+      expectedOutput: "Sep 23, 2024 08:00 AM",
     },
     {
       timezone: "America/Chicago", // Central Daylight Time (CDT)
-      expected: "Sep 23, 2024 07:00 AM",
+      expectedOutput: "Sep 23, 2024 07:00 AM",
     },
     {
       timezone: "America/Denver", // Mountain Daylight Time (MDT)
-      expected: "Sep 23, 2024 06:00 AM",
+      expectedOutput: "Sep 23, 2024 06:00 AM",
     },
     {
       timezone: "America/Los_Angeles", // Pacific Daylight Time (PDT)
-      expected: "Sep 23, 2024 05:00 AM",
+      expectedOutput: "Sep 23, 2024 05:00 AM",
     },
     {
       timezone: "America/Anchorage", // Alaska Daylight Time (AKDT)
-      expected: "Sep 23, 2024 04:00 AM",
+      expectedOutput: "Sep 23, 2024 04:00 AM",
     },
     {
       timezone: "Pacific/Honolulu", // Hawaii-Aleutian Standard Time (HAST, no DST)
-      expected: "Sep 23, 2024 02:00 AM",
+      expectedOutput: "Sep 23, 2024 02:00 AM",
     },
   ],
 }
@@ -44,9 +44,9 @@ describe("formatDate", () => {
   })
 
   it("should format valid ISO date string correctly for different timezones", () => {
-    for (const { timezone, expected } of timezoneTestData.timezones) {
+    for (const { timezone, expectedOutput } of timezoneTestData.timezones) {
       jest.spyOn(dayjs.tz, "guess").mockReturnValue(timezone)
-      expect(formatDate(timezoneTestData.input)).toBe(expected)
+      expect(formatDate(timezoneTestData.input)).toBe(expectedOutput)
     }
   })
 
