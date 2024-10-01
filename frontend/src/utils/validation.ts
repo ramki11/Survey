@@ -10,6 +10,11 @@ export const namePattern = {
   message: "Invalid name",
 }
 
+export const isoDateTimePattern = {
+  value: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/,
+  message: "Invalid ISO date-time format",
+}
+
 export const isISODateTimeString = (date: string): boolean => {
   // Unsafe access to 'error' type value is handled by zod's safeParse function
   /* eslint-disable */
