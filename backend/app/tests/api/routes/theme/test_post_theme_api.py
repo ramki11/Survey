@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.models.theme import MAX_NAME_LENGTH, MIN_NAME_LENGTH
-from app.tests.utils.test_post import test_post
+from app.tests.utils.api_post import api_post
 
 
 def test_post_theme_when_theme_does_not_exist_should_create_theme(
@@ -15,7 +15,7 @@ def test_post_theme_when_theme_does_not_exist_should_create_theme(
         "description": "Focus on qualities of leadership, such as guidance, influence, vision, and the ability to inspire and empower others.",
     }
 
-    content = test_post(
+    content = api_post(
         client=client,
         headers=superuser_token_headers,
         prefix="themes",
@@ -37,7 +37,7 @@ def test_post_theme_when_theme_exists_should_return_400(
     }
 
     # First creation should succeed
-    content = test_post(
+    api_post(
         client=client,
         headers=superuser_token_headers,
         prefix="themes",
@@ -46,7 +46,7 @@ def test_post_theme_when_theme_exists_should_return_400(
     )
 
     # Second creation should fail
-    content = test_post(
+    content = api_post(
         client=client,
         headers=superuser_token_headers,
         prefix="themes",
@@ -80,7 +80,7 @@ def test_post_theme_when_invalid_inputs_should_return_422(
     data: dict[str, Any],
     expected_error: str,
 ) -> None:
-    content = test_post(
+    content = api_post(
         client=client,
         headers=superuser_token_headers,
         prefix="themes",

@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from app.core.config import settings
 
 
-def test_post(
+def api_post(
     *,
     client: TestClient,
     headers: dict[str, str],
