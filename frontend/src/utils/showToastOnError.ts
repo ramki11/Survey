@@ -18,7 +18,7 @@ type ShowToastFunction = (
 /* eslint-enable */
 
 export const handleError = (err: ApiError, showToast: ShowToastFunction) => {
-  const errDetail = (err.body as ApiErrorBody)?.detail
+  const errDetail = (err.body as ApiErrorBody).detail
   let errorMessage = "Something went wrong."
   if (errDetail) {
     if (typeof errDetail === "string") {
