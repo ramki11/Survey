@@ -8,11 +8,14 @@ interface ApiErrorBody {
   detail?: string | ErrorDetail[]
 }
 
+// These variables are only used as type definition
+/* eslint-disable @typescript-eslint/no-unused-vars */
 type ShowToastFunction = (
   title: string,
   description: string,
   status: "success" | "error",
 ) => void
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export const handleError = (err: ApiError, showToast: ShowToastFunction) => {
   const errDetail = (err.body as ApiErrorBody)?.detail
