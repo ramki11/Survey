@@ -1,3 +1,9 @@
+// Disabling these ESLint rules for mocking the "dayjs" module
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+// Disabling to mock return value of "dayjs.tz.guess" function
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { formatDate } from "../../src/utils"
 import "@testing-library/jest-dom"
 import dayjs from "dayjs"
