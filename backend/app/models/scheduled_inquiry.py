@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 # Shared properties
 class ScheduledInquiryBase(SQLModel):
     inquiry_id: uuid.UUID = Field(foreign_key="inquiry.id", ondelete="CASCADE")
-    rank: int = Field(nullable=False)  # rank starts at 1
+    rank: int = Field(ge=1)  # rank starts at 1
 
 
 # Properties to receive on ScheduledInquiry creation
