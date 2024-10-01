@@ -2,11 +2,10 @@ from uuid import UUID
 
 from sqlmodel import Session, desc, func, select
 
-from app.models import ScheduledInquiry, ScheduledInquiryBase, ScheduledInquiryCreate
-from app.models.scheduled_inquiry import ScheduledInquiryPublic
+from app.models import ScheduledInquiry, ScheduledInquiryBase
 
 
-def create_scheduled_inquiry(*, session: Session, inquiry_id: UUID) -> ScheduledInquiry:
+def create(*, session: Session, inquiry_id: UUID) -> ScheduledInquiry:
     highest_rank = session.exec(
         select(ScheduledInquiry.rank).order_by(desc(ScheduledInquiry.rank))
     ).first()
@@ -23,32 +22,20 @@ def create_scheduled_inquiry(*, session: Session, inquiry_id: UUID) -> Scheduled
     return db_inquiry
 
 
-"""
-def get_inquiry_by_text(*, session: Session, text: str) -> Inquiry | None:
-    statement = select(Inquiry).where(Inquiry.text == text)
-    session_text = session.exec(statement).first()
-    return session_text
-
-
-def get_inquiry_by_id(*, session: Session, inquiry_id: UUID) -> Inquiry | None:
-    statement = select(Inquiry).where(Inquiry.id == inquiry_id)
-    session_text = session.exec(statement).first()
-    return session_text
-
-
-def get_inquiries(
+def get_scheduled_inquiries(
     *, session: Session, skip: int = 0, limit: int = 100
-) -> list[Inquiry]:
+) -> list[ScheduledInquiry]:
     if skip < 0:
         raise ValueError("Invalid value for 'skip': it must be non-negative")
     if limit < 0:
         raise ValueError("Invalid value for 'limit': it must be non-negative")
-    statement = select(Inquiry).offset(skip).limit(limit)
-    result = session.exec(statement).all()
-    return list(result)
+
+    statement = select(ScheduledInquiry).offset(skip).limit(limit)
+    scheduled_inquiries = session.exec(statement).all()
+
+    return list(scheduled_inquiries)
 
 
-def count_inquiries(*, session: Session) -> int:
-    statement = select(func.count()).select_from(Inquiry)
-    return session.exec(statement).one()
-"""
+def get_count(*, session: Session):
+    count_statement = select(func.count()).select_from(ScheduledInquiry)
+    return session.exec(count_statement).one()
