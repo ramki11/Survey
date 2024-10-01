@@ -1,10 +1,11 @@
 import dayjs from "dayjs"
 import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
+import { isoDateTimePattern } from "./validation"
 
 /**
  * Format given date to specified format based relative to user's timezone.
- * @param date - The date string to format (expected to be in ISO date format).
+ * @param date - The date string to format (expected to be in ISO 8601 date format).
  * @returns Formatted date string or "Invalid Date" if the input is not valid.
  *
  * Examples:
@@ -18,14 +19,16 @@ export const formatDate = (date: string): string => {
   dayjs.extend(timezone)
   /* eslint-enable */
 
-  const invalidDateMessage = "Invalid Date"
-  if (typeof date !== "string") return invalidDateMessage
+  const errorMessage = "Invalid Date"
+
+  if (typeof date !== "string" || !isoDateTimePattern.value.test(date))
+    return errorMessage
   // Unsafe access to 'error' typed value is handled by dayjs' isValid function
   /* eslint-disable */
   const parsedDate = dayjs.utc(date)
   const userTimezone = dayjs.tz.guess()
   return parsedDate.isValid()
     ? parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
-    : invalidDateMessage
+    : errorMessage
   /* eslint-enable */
 }
