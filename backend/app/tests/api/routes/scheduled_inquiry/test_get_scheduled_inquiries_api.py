@@ -15,13 +15,15 @@ route_prefix = "scheduledinquiries"
 # Populate the db with two test inquiries
 @pytest.fixture
 def db_inquiries(db: Session) -> Generator[tuple[Inquiry, Inquiry]]:
+    # Setup
     inquiry_in_1 = InquiryCreate(text="Test inquiry 1.")
     inquiry_in_2 = InquiryCreate(text="Test inquiry 2.")
-
     db_inquiry_1 = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in_1)
     db_inquiry_2 = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in_2)
 
     yield db_inquiry_1, db_inquiry_2
+
+    # Teardown
     db.delete(db_inquiry_1)
     db.delete(db_inquiry_2)
 
