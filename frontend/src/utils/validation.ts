@@ -11,9 +11,9 @@ export const namePattern = {
 }
 
 export const isoDateTimePattern = {
-  // Disabling ESLint due to complexity of this pattern
-  /* eslint-disable-next-line */
   value:
+    // Disabling ESLint due to complexity of this pattern
+    /* eslint-disable-next-line */
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})?$/,
   message: "Invalid ISO date-time format",
 }
