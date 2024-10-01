@@ -3,6 +3,12 @@ import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
 import { isoDateTimePattern } from "./validation"
 
+// dayjs plugins
+/* eslint-disable */
+dayjs.extend(utc)
+dayjs.extend(timezone)
+/* eslint-enable */
+
 /**
  * Format given date to specified format based relative to user's timezone.
  * Use this function to format the dateTime field retrieved from the database.
@@ -13,13 +19,6 @@ import { isoDateTimePattern } from "./validation"
  *  Input: "2024-09-23T12:00:00Z"
  *  Expected Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
-
-// dayjs plugins
-/* eslint-disable */
-dayjs.extend(utc)
-dayjs.extend(timezone)
-/* eslint-enable */
-
 export const formatISODateToUserTimezone = (date: string): string => {
   const errorMessage = "Invalid Date"
 
