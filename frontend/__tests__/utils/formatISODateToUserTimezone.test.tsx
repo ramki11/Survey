@@ -4,7 +4,7 @@
 // Disabling to mock return value of "dayjs.tz.guess" function
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import { formatDate } from "../../src/utils"
+import { formatISODateToUserTimezone } from "../../src/utils"
 import "@testing-library/jest-dom"
 import dayjs from "dayjs"
 
@@ -38,7 +38,7 @@ const timezoneTestData = {
   ],
 }
 
-describe("formatDate", () => {
+describe("formatISODateToUserTimezone", () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -46,19 +46,21 @@ describe("formatDate", () => {
   it("should format valid ISO date string correctly for different timezones", () => {
     for (const { timezone, expectedOutput } of timezoneTestData.timezones) {
       jest.spyOn(dayjs.tz, "guess").mockReturnValue(timezone)
-      expect(formatDate(timezoneTestData.input)).toBe(expectedOutput)
+      expect(formatISODateToUserTimezone(timezoneTestData.input)).toBe(
+        expectedOutput,
+      )
     }
   })
 
   it("should return 'Invalid Date' for invalid ISO date string", () => {
     const input = "12345"
     const expectedOutput = "Invalid Date"
-    expect(formatDate(input)).toBe(expectedOutput)
+    expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
   })
 
   it("should return 'Invalid Date' for an empty string", () => {
     const input = ""
     const expectedOutput = "Invalid Date"
-    expect(formatDate(input)).toBe(expectedOutput)
+    expect(formatISODateToUserTimezone(input)).toBe(expectedOutput)
   })
 })

@@ -5,6 +5,7 @@ import { isoDateTimePattern } from "./validation"
 
 /**
  * Format given date to specified format based relative to user's timezone.
+ * Use this function to format the dateTime field retrieved from the database.
  * @param date - The date string to format (expected to be in ISO 8601 date format).
  * @returns Formatted date string or "Invalid Date" if the input is not valid.
  *
@@ -19,7 +20,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 /* eslint-enable */
 
-export const formatDate = (date: string): string => {
+export const formatISODateToUserTimezone = (date: string): string => {
   const errorMessage = "Invalid Date"
 
   if (typeof date !== "string" || !isoDateTimePattern.value.test(date))
