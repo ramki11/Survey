@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import SessionDep
-from app.models import ScheduledInquiry, ScheduledInquiryCreate, ScheduledInquiryPublic
+from app.models import ScheduledInquiryCreate, ScheduledInquiryPublic
+from app.models.scheduled_inquiry import ScheduledInquiriesPublic
 from app.services import (
     inquiries as inquiries_service,
 )
@@ -17,7 +18,7 @@ def create_scheduled_inquiry(
     *,
     session: SessionDep,
     scheduled_inquiry_in: ScheduledInquiryCreate,
-) -> ScheduledInquiryPublic:
+):
     inquiry_id = scheduled_inquiry_in.inquiry_id
 
     inquiry_exists = inquiries_service.get_inquiry_by_id(
@@ -25,22 +26,13 @@ def create_scheduled_inquiry(
     )
 
     if not inquiry_exists:
-        raise HTTPException(status_code=400, detail="Inquiry not found")
+        raise HTTPException(status_code=422, detail="Inquiry not found")
 
-    data = scheduled_inquiries_service.create_scheduled_inquiry(
-        session=session, inquiry_id=inquiry_id
-    )
-
-    return ScheduledInquiryPublic(
-        inquiry_id=data.inquiry_id, rank=data.rank, id=data.id
-    )
+    return scheduled_inquiries_service.create(session=session, inquiry_id=inquiry_id)
 
 
-"""
-@router.get("/", response_model=InquriesPublic)
-def get_inquries(
-    session: SessionDep, skip: int = 0, limit: int = 100
-) -> InquriesPublic:
+@router.get("/", response_model=ScheduledInquiriesPublic)
+def get_scheduled_inquries(session: SessionDep, skip: int = 0, limit: int = 100):
     if skip < 0:
         raise HTTPException(
             status_code=400, detail="Invalid value for 'skip': it must be non-negative"
@@ -51,17 +43,10 @@ def get_inquries(
             detail="Invalid value for 'limit': it must be non-negative",
         )
 
-    count = inquiries_service.count_inquiries(session=session)
-    inquiries = inquiries_service.get_inquiries(session=session, skip=skip, limit=limit)
-    return InquriesPublic(data=inquiries, count=count)
-
-
-@router.get("/{inquiry_id}", response_model=InquiryPublic)
-def read_inquiry(session: SessionDep, inquiry_id: uuid.UUID) -> Inquiry:
-    inquiry = inquiries_service.get_inquiry_by_id(
-        session=session, inquiry_id=inquiry_id
+    scheduled_inquiries = scheduled_inquiries_service.get_scheduled_inquiries(
+        session=session, skip=skip, limit=limit
     )
-    if not inquiry:
-        raise HTTPException(status_code=404, detail="Inquiry not found")
-    return inquiry
-"""
+
+    total_count = scheduled_inquiries_service.get_count(session=session)
+
+    return {"data": scheduled_inquiries, "count": total_count}
