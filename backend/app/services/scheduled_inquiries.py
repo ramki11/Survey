@@ -36,6 +36,6 @@ def get_scheduled_inquiries(
     return list(scheduled_inquiries)
 
 
-def get_count(*, session: Session):
+def get_count(*, session: Session) -> int:
     count_statement = select(func.count()).select_from(ScheduledInquiry)
     return session.exec(count_statement).one()

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from sqlalchemy.sql.functions import count, rank
 
 from app.api.deps import SessionDep
 from app.models import ScheduledInquiryCreate, ScheduledInquiryPublic
@@ -18,7 +19,7 @@ def create_scheduled_inquiry(
     *,
     session: SessionDep,
     scheduled_inquiry_in: ScheduledInquiryCreate,
-):
+) -> ScheduledInquiryPublic:
     inquiry_id = scheduled_inquiry_in.inquiry_id
 
     inquiry_exists = inquiries_service.get_inquiry_by_id(
@@ -28,11 +29,21 @@ def create_scheduled_inquiry(
     if not inquiry_exists:
         raise HTTPException(status_code=422, detail="Inquiry not found")
 
-    return scheduled_inquiries_service.create(session=session, inquiry_id=inquiry_id)
+    db_scheduled_inquiry = scheduled_inquiries_service.create(
+        session=session, inquiry_id=inquiry_id
+    )
+
+    return ScheduledInquiryPublic(
+        id=db_scheduled_inquiry.id,
+        inquiry_id=db_scheduled_inquiry.inquiry_id,
+        rank=db_scheduled_inquiry.rank,
+    )
 
 
 @router.get("/", response_model=ScheduledInquiriesPublic)
-def get_scheduled_inquries(session: SessionDep, skip: int = 0, limit: int = 100):
+def get_scheduled_inquries(
+    session: SessionDep, skip: int = 0, limit: int = 100
+) -> ScheduledInquiriesPublic:
     if skip < 0:
         raise HTTPException(
             status_code=400, detail="Invalid value for 'skip': it must be non-negative"
@@ -49,4 +60,4 @@ def get_scheduled_inquries(session: SessionDep, skip: int = 0, limit: int = 100)
 
     total_count = scheduled_inquiries_service.get_count(session=session)
 
-    return {"data": scheduled_inquiries, "count": total_count}
+    return ScheduledInquiriesPublic(data=scheduled_inquiries, count=total_count)
