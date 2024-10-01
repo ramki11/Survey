@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from sqlalchemy.sql.functions import count, rank
 
 from app.api.deps import SessionDep
 from app.models import ScheduledInquiryCreate, ScheduledInquiryPublic
