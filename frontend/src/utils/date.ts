@@ -12,13 +12,14 @@ import { isoDateTimePattern } from "./validation"
  *  Input: "2024-09-23T12:00:00Z"
  *  Expected Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
-export const formatDate = (date: string): string => {
-  // dayjs plugins
-  /* eslint-disable */
-  dayjs.extend(utc)
-  dayjs.extend(timezone)
-  /* eslint-enable */
 
+// dayjs plugins
+/* eslint-disable */
+dayjs.extend(utc)
+dayjs.extend(timezone)
+/* eslint-enable */
+
+export const formatDate = (date: string): string => {
   const errorMessage = "Invalid Date"
 
   if (typeof date !== "string" || !isoDateTimePattern.value.test(date))
