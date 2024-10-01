@@ -11,7 +11,8 @@ export const namePattern = {
 }
 
 export const isoDateTimePattern = {
-  value: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/,
+  value:
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})?$/,
   message: "Invalid ISO date-time format",
 }
 
