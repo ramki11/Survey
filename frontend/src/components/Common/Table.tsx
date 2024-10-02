@@ -8,6 +8,7 @@ import {
   Tr,
 } from "@chakra-ui/react"
 import {
+  type Cell,
   type ColumnDef,
   type Table as ReactTableType,
   flexRender,
@@ -36,7 +37,7 @@ export function DataTable<Data extends object>({
     <TableContainer>
       <ChakraTable>
         <Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map((headerGroup: HeaderGroup<Data>) => (
             <Tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <Th key={header.id}>
