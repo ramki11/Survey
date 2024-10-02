@@ -1,44 +1,23 @@
-import { EditIcon } from "@chakra-ui/icons"
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  SkeletonText,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react"
+import { useDisclosure } from "@chakra-ui/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
 import { useMemo, useState } from "react"
-import type { InquiryPublic } from "../../client/models.ts"
-import * as InquiriesService from "../../client/services/inquiriesService.ts"
+import type { InquiryPublic } from "../../client/models"
+import * as InquiriesService from "../../client/services/inquiriesService"
+import useCustomToast from "../../hooks/useCustomToast"
 
 // Dayjs Configurations
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const InquiriesTable = () => {
+  const showToast = useCustomToast()
+
   // Format ISO date to the user's timezone.
   // ex. Sep 17, 2024 14:13 PM
-  function formatDate(date: string): string {
+  const formatDate = (date: string): string => {
     const invalidDateMessage = "Invalid Date"
     if (typeof date !== "string") return invalidDateMessage
 
@@ -49,27 +28,22 @@ const InquiriesTable = () => {
       : invalidDateMessage
   }
 
-  function getInquiriesQueryOptions() {
-    return {
-      queryKey: ["inquiries"],
-      queryFn: () => InquiriesService.readInquiries(),
-    }
-  }
-
   const { data: inquiries, isPending } = useQuery({
-    ...getInquiriesQueryOptions(),
+    queryKey: ["inquiries"],
+    queryFn: () => InquiriesService.readInquiries(),
   })
 
   // Sort inquiries from Newest to oldest
   const sortedInquiries = useMemo(() => {
-    if (!inquiries?.data) return []
-    return inquiries.data.sort((a, b) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
+    return inquiries?.data
+      ? [...inquiries.data].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        )
+      : []
   }, [inquiries])
 
   const queryClient = useQueryClient()
-  const toast = useToast()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryPublic | null>(
@@ -82,25 +56,14 @@ const InquiriesTable = () => {
       return await InquiriesService.updateInquiry(updatedInquiry)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inquiries"] })
-      toast({
-        title: "Inquiry updated successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      })
+      showToast("Success!", "Inquiry updated successfully.", "success")
       onClose()
     },
-    onError: (error: any) => {
-      console.error("Error updating inquiry:", error)
-
-      toast({
-        title: "Error updating inquiry",
-        description: error.message || "Something went wrong",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      })
+    onError: (err) => {
+      handleError(err as ApiError, showToast)
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["inquiries"] })
     },
   })
 
@@ -111,6 +74,11 @@ const InquiriesTable = () => {
   }
 
   const handleSave = () => {
+    if (editText.length < 10) {
+      showToast("Error", "Inquiry must be at least 10 characters.", "error")
+      return
+    }
+
     if (selectedInquiry) {
       updateInquiryMutation.mutate({
         ...selectedInquiry,
@@ -167,31 +135,29 @@ const InquiriesTable = () => {
           )}
         </Table>
       </TableContainer>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Inquiry</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Text</FormLabel>
-              <Input
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Edit Inquiry</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Textarea
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
               />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                Save
+              </Button>
+              <Button variant="ghost" onClick={onClose}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </>
   )
 }
