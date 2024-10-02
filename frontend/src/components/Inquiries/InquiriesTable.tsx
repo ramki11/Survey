@@ -1,17 +1,6 @@
 import { EditIcon } from "@chakra-ui/icons"
 import {
-  Button,
-  FormControl,
-  FormLabel,
   IconButton,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SkeletonText,
   Table,
   TableContainer,
@@ -30,6 +19,7 @@ import utc from "dayjs/plugin/utc"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
+import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
 
 // Dayjs Configurations
 dayjs.extend(utc)
@@ -72,9 +62,9 @@ const InquiriesTable = () => {
   const toast = useToast()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [selectedInquiry, setSelectedInquiry] = useState<InquiryPublic | null>(
-    null,
-  )
+  const [selectedInquiry, setSelectedInquiry] = useState<
+    InquiryPublic | undefined
+  >(undefined)
   const [editText, setEditText] = useState("")
 
   const updateInquiryMutation = useMutation({
@@ -167,31 +157,13 @@ const InquiriesTable = () => {
           )}
         </Table>
       </TableContainer>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Inquiry</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Text</FormLabel>
-              <Input
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddOrEditInquiryModal
+        isOpen={isOpen}
+        onClose={onClose}
+        mode={selectedInquiry ? "edit" : "add"}
+        onSave={handleSave}
+        inquiry={selectedInquiry}
+      />
     </>
   )
 }

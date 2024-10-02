@@ -15,6 +15,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
+import { useEffect } from "react"
 import type { ApiError } from "../../client"
 import type {
   InquiryCreate,
@@ -39,6 +40,7 @@ function isValidUnicode(str: string): boolean {
 interface InquiryModalProps {
   isOpen: boolean
   onClose: () => void
+  onSave: () => void // Add this line
   inquiry?: InquiryPublic // Use InquiryPublic for consistency
   mode: "add" | "edit"
 }
@@ -57,6 +59,7 @@ const InquiryModal = ({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm<InquiryCreate>({
     mode: "onBlur",
     criteriaMode: "all",
@@ -103,6 +106,12 @@ const InquiryModal = ({
       mutation.mutate({ ...data, id: "" })
     }
   }
+
+  useEffect(() => {
+    if (mode === "edit" && inquiry) {
+      setValue("text", inquiry.text)
+    }
+  }, [mode, inquiry, setValue])
 
   return (
     <Modal
