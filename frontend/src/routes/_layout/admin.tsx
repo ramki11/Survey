@@ -68,7 +68,7 @@ function UsersTable() {
 
   useEffect(() => {
     if (hasNextPage) {
-      queryClient.prefetchQuery(getUsersQueryOptions({ page: page + 1 }))
+      void queryClient.prefetchQuery(getUsersQueryOptions({ page: page + 1 }))
     }
   }, [page, queryClient, hasNextPage])
 
@@ -131,7 +131,6 @@ function UsersTable() {
                     <ActionsMenu
                       type="User"
                       value={user}
-                      disabled={currentUser?.id === user.id}
                       disabled={currentUser?.id === user.id}
                     />
                   </Td>

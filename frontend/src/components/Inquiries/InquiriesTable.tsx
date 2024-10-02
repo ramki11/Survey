@@ -13,11 +13,14 @@ import {
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import type { InquiryPublic } from "../../client"
+import type { InquiryPublic } from "../../client/models.ts"
 import { InquiriesService } from "../../client/services"
+import { useInquiries } from "../../hooks/useInquiries.ts"
 import { formatISODateToUserTimezone } from "../../utils/date.ts"
+import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
 
 const InquiriesTable = () => {
+  const { data: inquiriesData, isLoading } = useInquiries()
   function getInquiriesQueryOptions() {
     return {
       queryKey: ["inquiries"],
@@ -27,7 +30,7 @@ const InquiriesTable = () => {
           ...inquiries,
           data: inquiries.data.map((inquiry: InquiryPublic) => ({
             ...inquiry,
-            created_at: formatDate(inquiry.created_at),
+            created_at: formatISODateToUserTimezone(inquiry.created_at),
           })),
         }
       },
@@ -40,8 +43,8 @@ const InquiriesTable = () => {
 
   // Sort inquiries from Newest to oldest
   const sortedInquiries = useMemo(() => {
-    if (!inquiries?.data) return []
-    return inquiries.data.sort((a: InquiryPublic, b: InquiryPublic) => {
+    if (!inquiriesData?.data) return []
+    return inquiriesData.data.sort((a: InquiryPublic, b: InquiryPublic) => {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   }, [inquiries])
@@ -54,6 +57,10 @@ const InquiriesTable = () => {
   const handleEditClick = (inquiry: InquiryPublic) => {
     setSelectedInquiry(inquiry)
     onOpen()
+  }
+
+  const handleRowClick = (inquiry: InquiryPublic) => {
+    console.log("Row clicked:", inquiry)
   }
 
   return (
