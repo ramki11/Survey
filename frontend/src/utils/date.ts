@@ -21,7 +21,7 @@ export const DATE_PARSING_ERROR_MESSAGE = "Error parsing the date"
  * @throws Error message if the input is not valid ISO string or date cannot be parsed.
  *
  * Examples:
- *  Input: "2024-09-23T12:00:00Z"
+ *  Input: "2024-09-23T12:00:00"
  *  Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
 export const formatISODateToUserTimezone = (date: string): string => {
