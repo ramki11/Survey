@@ -64,7 +64,7 @@ describe("Inquiries Table", () => {
   })
 
   it("should display empty table when there's no inquiries.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
+    ; (useQuery as jest.Mock).mockReturnValue({
       data: { data: [] },
       isPending: false,
     })
@@ -74,7 +74,7 @@ describe("Inquiries Table", () => {
   })
 
   it("should display correct number of inquiries in table.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
+    ; (useQuery as jest.Mock).mockReturnValue({
       data: { data: multipleInquiries },
       isPending: false,
     })
@@ -85,7 +85,7 @@ describe("Inquiries Table", () => {
   })
 
   it("should display correct inquiry text.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
+    ; (useQuery as jest.Mock).mockReturnValue({
       data: { data: singleInquiry },
       isPending: false,
     })
@@ -96,7 +96,7 @@ describe("Inquiries Table", () => {
   })
 
   it("should display correct inquiry created date and time, formatted to the user's timzeone.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
+    ; (useQuery as jest.Mock).mockReturnValue({
       data: { data: singleInquiry },
       isPending: false,
     })
@@ -109,31 +109,33 @@ describe("Inquiries Table", () => {
   })
 
   it("should throw an error for inquiry with invalid created date and time.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
-      data: { data: inquiryWithoutCreationDate },
-      isPending: false,
+    it("should throw an error for inquiry with invalid created date and time.", () => {
+      ; (useQuery as jest.Mock).mockReturnValue({
+        data: { data: inquiryWithoutCreationDate },
+        isPending: false,
+      })
+      jest.spyOn(console, "error").mockImplementation(() => { })
+      expect(() => renderComponent()).toThrow()
     })
-    jest.spyOn(console, "error").mockImplementation(jest.fn())
-    expect(() => renderComponent()).toThrow()
-  })
 
-  it("should display inquiries from newest to oldest.", () => {
-    ;(useQuery as jest.Mock).mockReturnValue({
-      data: { data: multipleInquiries },
-      isPending: false,
-    })
-    renderComponent()
+    it("should display inquiries from newest to oldest.", () => {
+      ; (useQuery as jest.Mock).mockReturnValue({
+        data: { data: multipleInquiries },
+        isPending: false,
+      })
+      renderComponent()
 
-    const dateColumns = screen.getAllByTestId("inquiry-datetime")
-    const inquiryDates = dateColumns.map(
-      (col) => new Date(col.textContent?.trim() ?? ""),
-    )
-    for (let i = 1; i < inquiryDates.length; i++) {
-      // The inquiries used for this test always have valid created_at datetime value
-      /* eslint-disable-next-line */
-      expect(inquiryDates[i].getTime()).toBeLessThan(
-        inquiryDates[i - 1].getTime(),
+      const dateColumns = screen.getAllByTestId("inquiry-datetime")
+      const inquiryDates = dateColumns.map(
+        (col) => new Date(col.textContent?.trim() ?? ""),
       )
-    }
+      for (let i = 1; i < inquiryDates.length; i++) {
+        // The inquiries used for this test always have valid created_at datetime value
+        /* eslint-disable-next-line */
+        expect(inquiryDates[i].getTime()).toBeLessThan(
+          inquiryDates[i - 1].getTime(),
+        )
+      }
+    })
   })
 })
