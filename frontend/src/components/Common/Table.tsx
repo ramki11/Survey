@@ -8,7 +8,11 @@ import {
   Tr,
 } from "@chakra-ui/react"
 import {
+  type Cell,
   type ColumnDef,
+  type Header,
+  type HeaderGroup,
+  type Row,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -16,7 +20,7 @@ import {
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
-  columns: ColumnDef<Data, any>[]
+  columns: ColumnDef<Data, unknown>[]
   onRowClick?: (row: Data) => void
 }
 
@@ -35,9 +39,9 @@ export function DataTable<Data extends object>({
     <TableContainer>
       <Table>
         <Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map((headerGroup: HeaderGroup<Data>) => (
             <Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map((header: Header<Data, unknown>) => {
                 return (
                   <Th key={header.id}>
                     {flexRender(
@@ -51,9 +55,9 @@ export function DataTable<Data extends object>({
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows.map((row: Row<Data>) => (
             <Tr key={row.id} onClick={() => onRowClick?.(row.original)}>
-              {row.getVisibleCells().map((cell) => {
+              {row.getVisibleCells().map((cell: Cell<Data, unknown>) => {
                 return (
                   <Td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
