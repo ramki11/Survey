@@ -9,27 +9,37 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 /* eslint-enable */
 
+export const INVALID_DATE_TYPE_ERROR_MESSAGE = "Date must be a string"
+export const ISO_DATE_FORMAT_ERROR_MESSAGE = "Date must be in ISO 8601 format"
+export const DATE_PARSING_ERROR_MESSAGE = "Error parsing the date"
+
 /**
  * Format given date to specified format based relative to user's timezone.
  * Use this function to format the dateTime field retrieved from the database.
  * @param date - The date string to format (expected to be in ISO 8601 date format).
- * @returns Formatted date string or "Invalid Date" if the input is not valid.
+ * @returns Formatted date string
+ * @throws Error message if the input is not valid ISO string or date cannot be parsed.
  *
  * Examples:
  *  Input: "2024-09-23T12:00:00Z"
- *  Expected Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
+ *  Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
 export const formatISODateToUserTimezone = (date: string): string => {
-  const errorMessage = "Invalid Date"
+  if (typeof date !== "string") {
+    throw new Error(INVALID_DATE_TYPE_ERROR_MESSAGE)
+  }
 
-  if (typeof date !== "string" || !isoDateTimePattern.value.test(date))
-    return errorMessage
-  // Unsafe access to 'error' typed value is handled by dayjs' isValid function
-  /* eslint-disable */
+  if (!isoDateTimePattern.value.test(date)) {
+    throw new Error(ISO_DATE_FORMAT_ERROR_MESSAGE)
+  }
+
   const parsedDate = dayjs.utc(date)
+  if (!parsedDate.isValid()) {
+    throw new Error(DATE_PARSING_ERROR_MESSAGE)
+  }
+
   const userTimezone = dayjs.tz.guess()
-  return parsedDate.isValid()
-    ? parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
-    : errorMessage
-  /* eslint-enable */
+  // Unsafe access to 'error' typed value is handled by dayjs' isValid function
+  /* eslint-disable-next-line */
+  return parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
 }
