@@ -33,13 +33,14 @@ export const formatISODateToUserTimezone = (date: string): string => {
     throw new Error(ISO_DATE_FORMAT_ERROR_MESSAGE)
   }
 
+  // Unsafe access to 'error' typed value is handled by dayjs' isValid function
+  /* eslint-disable */
   const parsedDate = dayjs.utc(date)
   if (!parsedDate.isValid()) {
     throw new Error(DATE_PARSING_ERROR_MESSAGE)
   }
 
   const userTimezone = dayjs.tz.guess()
-  // Unsafe access to 'error' typed value is handled by dayjs' isValid function
-  /* eslint-disable-next-line */
   return parsedDate.tz(userTimezone).format("MMM DD, YYYY hh:mm A")
+  /* eslint-enable */
 }

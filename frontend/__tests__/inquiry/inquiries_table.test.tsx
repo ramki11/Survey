@@ -109,14 +109,14 @@ describe("Inquiries Table", () => {
   })
 
   it("should throw an error for inquiry with invalid created date and time.", () => {
-    it("should throw an error for inquiry with invalid created date and time.", () => {
-      ; (useQuery as jest.Mock).mockReturnValue({
-        data: { data: inquiryWithoutCreationDate },
-        isPending: false,
-      })
-      jest.spyOn(console, "error").mockImplementation(() => { })
-      expect(() => renderComponent()).toThrow()
+    ;(useQuery as jest.Mock).mockReturnValue({
+      data: { data: inquiryWithoutCreationDate },
+      isPending: false,
     })
+
+    jest.spyOn(console, "error").mockImplementation(jest.fn())
+    expect(() => renderComponent()).toThrow()
+  })
 
     it("should display inquiries from newest to oldest.", () => {
       ; (useQuery as jest.Mock).mockReturnValue({
@@ -136,6 +136,5 @@ describe("Inquiries Table", () => {
           inquiryDates[i - 1].getTime(),
         )
       }
-    })
   })
 })
