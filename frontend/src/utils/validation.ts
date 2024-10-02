@@ -11,9 +11,12 @@ export const namePattern = {
 }
 
 export const isISODateTimeString = (date: string): boolean => {
+  // Unsafe access to 'error' type value is handled by zod's safeParse function
+  /* eslint-disable */
   const isoDateTimeSchema = z.string().datetime({ local: true })
   const parseResult = isoDateTimeSchema.safeParse(date)
   return parseResult.success
+  /* eslint-enable */
 }
 
 export const passwordRules = (isRequired = true) => {
