@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
-import { formatISODateToUserTimezone } from "../../utils/"
+import { formatISODateToUserTimezone } from "../../utils/date.ts"
 import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
 
 const InquiriesTable = () => {
