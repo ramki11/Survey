@@ -10,12 +10,10 @@ export const namePattern = {
   message: "Invalid name",
 }
 
-export const isoDateTimePattern = {
-  value:
-    // Disabling ESLint due to complexity of this pattern
-    /* eslint-disable-next-line */
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})?$/,
-  message: "Invalid ISO date-time format",
+export const isISODateTimeString = (date: string): boolean => {
+  const isoDateTimeSchema = z.string().datetime({ local: true })
+  const parseResult = isoDateTimeSchema.safeParse(date)
+  return parseResult.success
 }
 
 export const isISODateTimeString = (date: string): boolean => {
