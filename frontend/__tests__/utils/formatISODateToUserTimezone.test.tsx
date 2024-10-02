@@ -9,7 +9,7 @@ import {
   INVALID_DATE_TYPE_ERROR_MESSAGE,
   ISO_DATE_FORMAT_ERROR_MESSAGE,
   formatISODateToUserTimezone,
-} from "../../src/utils"
+} from "../../src/utils/date"
 import "@testing-library/jest-dom"
 import dayjs from "dayjs"
 
