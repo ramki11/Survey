@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
-import { isoDateTimePattern } from "./validation"
+import { isISODateTimeString } from "./validation"
 
 // dayjs plugins
 /* eslint-disable */
@@ -29,7 +29,7 @@ export const formatISODateToUserTimezone = (date: string): string => {
     throw new Error(INVALID_DATE_TYPE_ERROR_MESSAGE)
   }
 
-  if (!isoDateTimePattern.value.test(date)) {
+  if (!isISODateTimeString(date)) {
     throw new Error(ISO_DATE_FORMAT_ERROR_MESSAGE)
   }
 
