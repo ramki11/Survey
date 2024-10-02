@@ -100,7 +100,7 @@ const InquiryModal = ({
     if (mode === "edit") {
       mutation.mutate({ ...data, id: inquiry!.id } as InquiryUpdate)
     } else {
-      mutation.mutate({ ...data, id: inquiry!.id } as InquiryUpdate)
+      mutation.mutate({ ...data, id: "" })
     }
   }
 
