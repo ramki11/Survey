@@ -16,11 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
 import type { ApiError } from "../../client"
-import type {
-  InquiryCreate,
-  InquiryPublic,
-  InquiryUpdate,
-} from "../../client/models"
+import type { InquiryPublic, InquiryUpdate } from "../../client/models"
 import * as InquiriesService from "../../client/services"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
@@ -36,19 +32,19 @@ function isValidUnicode(str: string): boolean {
   }
 }
 
-interface InquiryModalProps {
+interface AddOrEditInquiryModalProps {
   isOpen: boolean
   onClose: () => void
-  inquiry?: InquiryPublic // Use InquiryPublic for consistency
-  mode: "add" | "edit"
+  inquiry?: InquiryPublic | null
+  onSave: (updatedInquiry: InquiryUpdate) => void
 }
 
-const InquiryModal = ({
+const AddOrEditInquiryModal = ({
   isOpen,
   onClose,
   inquiry,
-  mode,
-}: InquiryModalProps) => {
+  onSave,
+}: AddOrEditInquiryModalProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
@@ -57,30 +53,24 @@ const InquiryModal = ({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<InquiryCreate>({
+  } = useForm<InquiryUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       text: inquiry?.text ?? "",
+      id: inquiry?.id ?? "", // Include id in default values
     },
   })
 
+  const isEditing = !!inquiry
+
   const mutation = useMutation({
-    mutationFn:
-      mode === "edit"
-        ? (data: InquiryUpdate) =>
-            InquiriesService.updateInquiry({
-              ...inquiry,
-              ...data,
-              id: inquiry!.id,
-              created_at: inquiry!.created_at ?? "",
-            })
-        : (data: InquiryCreate) =>
-            InquiriesService.createInquiry({ requestBody: data }),
+    mutationFn: (data: InquiryUpdate) =>
+      InquiriesService.updateInquiry(data as InquiryPublic),
     onSuccess: () => {
       showToast(
         "Success!",
-        mode === "edit"
+        isEditing
           ? "Inquiry updated successfully."
           : "Inquiry created successfully.",
         "success",
@@ -96,41 +86,22 @@ const InquiryModal = ({
     },
   })
 
-  const onSubmit: SubmitHandler<InquiryCreate> = (data) => {
-    if (mode === "edit") {
-      mutation.mutate({ ...data, id: inquiry!.id } as InquiryUpdate)
-    } else {
-      mutation.mutate({ ...data, id: inquiry!.id } as InquiryUpdate)
-    }
+  const onSubmit: SubmitHandler<InquiryUpdate> = (data) => {
+    onSave(data)
+    mutation.mutate(data)
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size={{ base: "sm", md: "md" }}
-      isCentered
-    >
+    <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
       <ModalOverlay />
       <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-        <ModalHeader
-          id={
-            mode === "edit"
-              ? "edit-inquiry-show-modal"
-              : "add-inquiry-show-modal"
-          }
-        >
-          {mode === "edit" ? "Edit Inquiry" : "Add Inquiry"}
-        </ModalHeader>
+        <ModalHeader>{isEditing ? "Edit Inquiry" : "Add Inquiry"}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <FormControl isInvalid={!!errors.text}>
             <FormLabel htmlFor="text">Inquiry Text</FormLabel>
             <Textarea
               id="text"
-              data-testid={
-                mode === "edit" ? "edit-inquiry-text" : "add-inquiry-text"
-              }
               {...register("text", {
                 required: "Inquiry text is required.",
                 minLength: {
@@ -146,7 +117,7 @@ const InquiryModal = ({
                   "Inquiry must be a valid unicode string.",
               })}
               placeholder={
-                mode === "edit"
+                isEditing
                   ? "Edit the text of your inquiry."
                   : "Enter the text of your inquiry."
               }
@@ -158,14 +129,7 @@ const InquiryModal = ({
         </ModalBody>
 
         <ModalFooter gap={3}>
-          <Button
-            isLoading={isSubmitting}
-            variant="primary"
-            type="submit"
-            data-testid={
-              mode === "edit" ? "submit-edit-inquiry" : "submit-add-inquiry"
-            }
-          >
+          <Button isLoading={isSubmitting} type="submit" colorScheme="blue">
             Save
           </Button>
           <Button onClick={onClose}>Cancel</Button>
@@ -175,4 +139,4 @@ const InquiryModal = ({
   )
 }
 
-export default InquiryModal
+export default AddOrEditInquiryModal

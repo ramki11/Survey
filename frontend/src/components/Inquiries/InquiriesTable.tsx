@@ -1,17 +1,6 @@
 import { EditIcon } from "@chakra-ui/icons"
 import {
-  Button,
-  FormControl,
-  FormLabel,
   IconButton,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SkeletonText,
   Table,
   TableContainer,
@@ -30,6 +19,7 @@ import utc from "dayjs/plugin/utc"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
+import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
 
 // Dayjs Configurations
 dayjs.extend(utc)
@@ -62,10 +52,13 @@ const InquiriesTable = () => {
 
   // Sort inquiries from Newest to oldest
   const sortedInquiries = useMemo(() => {
-    if (!inquiries?.data) return []
-    return inquiries.data.sort((a, b) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
+    return inquiries?.data
+      ? [...inquiries.data].sort((a, b) => {
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          )
+        })
+      : []
   }, [inquiries])
 
   const queryClient = useQueryClient()
@@ -75,7 +68,6 @@ const InquiriesTable = () => {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryPublic | null>(
     null,
   )
-  const [editText, setEditText] = useState("")
 
   const updateInquiryMutation = useMutation({
     mutationFn: async (updatedInquiry: InquiryPublic) => {
@@ -106,17 +98,7 @@ const InquiriesTable = () => {
 
   const handleEditClick = (inquiry: InquiryPublic) => {
     setSelectedInquiry(inquiry)
-    setEditText(inquiry.text)
     onOpen()
-  }
-
-  const handleSave = () => {
-    if (selectedInquiry) {
-      updateInquiryMutation.mutate({
-        ...selectedInquiry,
-        text: editText,
-      })
-    }
   }
 
   return (
@@ -132,13 +114,19 @@ const InquiriesTable = () => {
           </Thead>
           {isPending ? (
             <Tbody>
-              <Tr>
-                {new Array(3).fill(null).map((_, index) => (
-                  <Td key={index}>
+              {[...Array(3)].map((_, index) => (
+                <Tr key={index}>
+                  <Td>
                     <SkeletonText noOfLines={1} />
                   </Td>
-                ))}
-              </Tr>
+                  <Td>
+                    <SkeletonText noOfLines={1} />
+                  </Td>
+                  <Td>
+                    <SkeletonText noOfLines={1} />
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           ) : (
             <Tbody>
@@ -167,31 +155,18 @@ const InquiriesTable = () => {
           )}
         </Table>
       </TableContainer>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Inquiry</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Text</FormLabel>
-              <Input
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {selectedInquiry && (
+        <AddOrEditInquiryModal
+          isOpen={isOpen}
+          onClose={onClose}
+          inquiry={selectedInquiry}
+          onSave={() =>
+            updateInquiryMutation.mutate({
+              ...selectedInquiry,
+            })
+          }
+        />
+      )}
     </>
   )
 }
