@@ -113,7 +113,6 @@ describe("Inquiries Table", () => {
       data: { data: inquiryWithoutCreationDate },
       isPending: false,
     })
-
     jest.spyOn(console, "error").mockImplementation(jest.fn())
     expect(() => renderComponent()).toThrow()
   })
