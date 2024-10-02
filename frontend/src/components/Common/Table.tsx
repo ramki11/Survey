@@ -1,5 +1,5 @@
 import {
-  Table as ChakraTable,
+  Table,
   TableContainer,
   Tbody,
   Td,
@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react"
 import {
   type ColumnDef,
-  type Table as ReactTableType,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -17,7 +16,7 @@ import {
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
-  columns: ColumnDef<Data, string>[]
+  columns: ColumnDef<Data, any>[]
   onRowClick?: (row: Data) => void
 }
 
@@ -26,7 +25,7 @@ export function DataTable<Data extends object>({
   columns,
   onRowClick,
 }: DataTableProps<Data>) {
-  const table: ReactTableType<Data> = useReactTable<Data>({
+  const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
@@ -34,36 +33,37 @@ export function DataTable<Data extends object>({
 
   return (
     <TableContainer>
-      <ChakraTable>
+      <Table>
         <Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Th key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                </Th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                return (
+                  <Th key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </Th>
+                )
+              })}
             </Tr>
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map((row) => {
-            const { original } = row
-            return (
-              <Tr key={row.id} onClick={() => onRowClick?.(original)}>
-                {row.getVisibleCells().map((cell) => (
+          {table.getRowModel().rows.map((row) => (
+            <Tr key={row.id} onClick={() => onRowClick?.(row.original)}>
+              {row.getVisibleCells().map((cell) => {
+                return (
                   <Td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Td>
-                ))}
-              </Tr>
-            )
-          })}
+                )
+              })}
+            </Tr>
+          ))}
         </Tbody>
-      </ChakraTable>
+      </Table>
     </TableContainer>
   )
 }

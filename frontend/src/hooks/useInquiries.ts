@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
-import { InquiriesService } from "../client"
+import * as InquiriesService from "../client/services/inquiriesService.ts"
 
 function getInquiriesQueryOptions() {
   return {
     queryKey: ["inquiries"],
-    queryFn: () => InquiriesService.inquiriesGetInquries(),
+    queryFn: () => InquiriesService.readInquiries(),
   }
 }
 
