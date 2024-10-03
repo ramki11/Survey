@@ -2,7 +2,9 @@ from fastapi import APIRouter, HTTPException
 
 from app.api.deps import SessionDep
 from app.models import ScheduledInquiryCreate, ScheduledInquiryPublic
-from app.models.scheduled_inquiry import ScheduledInquiriesPublic
+from app.models.scheduled_inquiry import (
+    ScheduledInquiriesPublic,
+)
 from app.services import (
     inquiries as inquiries_service,
 )
@@ -28,15 +30,11 @@ def add_to_schedule(
     if not inquiry_exists:
         raise HTTPException(status_code=422, detail="Inquiry not found")
 
-    db_scheduled_inquiry = scheduled_inquiries_service.create(
+    scheduled_inquiry = scheduled_inquiries_service.create(
         session=session, inquiry_id=inquiry_id
     )
 
-    return ScheduledInquiryPublic(
-        id=db_scheduled_inquiry.id,
-        inquiry_id=db_scheduled_inquiry.inquiry_id,
-        rank=db_scheduled_inquiry.rank,
-    )
+    return scheduled_inquiry
 
 
 @router.get("/", response_model=ScheduledInquiriesPublic)
