@@ -51,7 +51,7 @@ const InquiryModal = ({
 }: InquiryModalProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
-  // codacy-disable
+  //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const {
     register,
     handleSubmit,
@@ -65,7 +65,6 @@ const InquiryModal = ({
       text: inquiry?.text ?? "",
     },
   })
-  // codacy-enable
 
   const mutation = useMutation({
     mutationFn:
