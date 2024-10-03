@@ -111,7 +111,7 @@ const InquiryModal = ({
 
   useEffect(() => {
     if (mode === "edit" && inquiry) {
-      setValue("text", inquiry?.text ?? "")
+      setValue("text", inquiry?.text)
     }
   }, [mode, inquiry, setValue])
 

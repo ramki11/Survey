@@ -29,7 +29,7 @@ const InquiriesTable = () => {
   // Format ISO date to the user's timezone.
   // ex. Sep 17, 2024 14:13 PM
   const queryClient = useQueryClient()
-  const toast = useToast() as ReturnType<typeof useToast>
+  const toast = useToast()
 
   function formatDate(date: string): string {
     const invalidDateMessage = "Invalid Date"
