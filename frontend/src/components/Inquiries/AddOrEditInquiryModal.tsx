@@ -53,20 +53,19 @@ const InquiryModal = ({
 }: InquiryModalProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
-
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<InquiryCreate>({
+  } = useForm<InquiryCreate | InquiryUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       text: inquiry?.text ?? "",
     },
-  })
+  } as any)
 
   const mutation = useMutation({
     mutationFn:
@@ -75,8 +74,8 @@ const InquiryModal = ({
             InquiriesService.updateInquiry({
               ...inquiry,
               ...data,
-              id: inquiry!.id,
-              created_at: inquiry!.created_at ?? "",
+              id: inquiry?.id ?? "",
+              created_at: inquiry!.created_at,
             })
         : (data: InquiryCreate) =>
             InquiriesService.createInquiry({ requestBody: data }),
@@ -88,7 +87,9 @@ const InquiryModal = ({
           : "Inquiry created successfully.",
         "success",
       )
-      reset()
+      reset({
+        text: inquiry?.text ?? "",
+      })
       onClose()
     },
     onError: (err: ApiError) => {
@@ -101,15 +102,15 @@ const InquiryModal = ({
 
   const onSubmit: SubmitHandler<InquiryCreate> = (data) => {
     if (mode === "edit") {
-      mutation.mutate({ ...data, id: inquiry!.id } as InquiryUpdate)
+      mutation.mutate({ ...data, id: inquiry?.id } as InquiryUpdate)
     } else {
-      mutation.mutate({ ...data, id: "" })
+      mutation.mutate({ ...data, id: inquiry?.id ?? "" } as InquiryUpdate)
     }
   }
 
   useEffect(() => {
     if (mode === "edit" && inquiry) {
-      setValue("text", inquiry.text)
+      setValue("text", inquiry?.text ?? "")
     }
   }, [mode, inquiry, setValue])
 
@@ -121,7 +122,12 @@ const InquiryModal = ({
       isCentered
     >
       <ModalOverlay />
-      <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
+      <ModalContent
+        as="form"
+        onSubmit={handleSubmit(
+          onSubmit as SubmitHandler<InquiryCreate | InquiryUpdate>,
+        )}
+      >
         <ModalHeader
           id={
             mode === "edit"
@@ -133,14 +139,14 @@ const InquiryModal = ({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <FormControl isInvalid={!!errors.text}>
+          <FormControl isInvalid={!!errors?.text}>
             <FormLabel htmlFor="text">Inquiry Text</FormLabel>
             <Textarea
               id="text"
               data-testid={
                 mode === "edit" ? "edit-inquiry-text" : "add-inquiry-text"
               }
-              {...register("text", {
+              {...register("text" as const, {
                 required: "Inquiry text is required.",
                 minLength: {
                   value: MIN_INQUIRY_LENGTH,
@@ -160,15 +166,15 @@ const InquiryModal = ({
                   : "Enter the text of your inquiry."
               }
             />
-            {errors.text && (
-              <FormErrorMessage>{errors.text.message}</FormErrorMessage>
+            {"text" in errors && (
+              <FormErrorMessage>{errors.text?.message}</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
 
         <ModalFooter gap={3}>
           <Button
-            isLoading={isSubmitting}
+            isLoading={isSubmitting as boolean}
             variant="primary"
             type="submit"
             data-testid={
