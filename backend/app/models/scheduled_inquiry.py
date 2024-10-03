@@ -26,12 +26,16 @@ class ScheduledInquiry(ScheduledInquiryBase, table=True):
     inquiry: "Inquiry" = Relationship(back_populates="scheduled_inquiries")
 
 
-# Properties to return via API for a single ScheduledInquiry
+# Properties to return via API. Contains Inquiry text.
 class ScheduledInquiryPublic(ScheduledInquiryBase):
     id: uuid.UUID
 
 
-# Properties to return via API for multiple ScheduledInquiries
+class ScheduledInquiryPublicWithInquiryText(ScheduledInquiryPublic):
+    text: str
+
+
+# Properties to return via API.
 class ScheduledInquiriesPublic(SQLModel):
-    data: list[ScheduledInquiryPublic]
+    data: list[ScheduledInquiryPublicWithInquiryText]
     count: int
