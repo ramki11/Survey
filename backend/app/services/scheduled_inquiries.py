@@ -1,11 +1,17 @@
 from uuid import UUID
 
-from sqlmodel import Session, desc, func, select
+from sqlmodel import Session, col, desc, func, select
 
-from app.models import ScheduledInquiry, ScheduledInquiryBase
+from app.models import (
+    Inquiry,
+    ScheduledInquiry,
+    ScheduledInquiryBase,
+    ScheduledInquiryPublic,
+)
+from app.models.scheduled_inquiry import ScheduledInquiryPublicWithInquiryText
 
 
-def create(*, session: Session, inquiry_id: UUID) -> ScheduledInquiry:
+def create(*, session: Session, inquiry_id: UUID) -> ScheduledInquiryPublic:
     highest_rank = session.exec(
         select(ScheduledInquiry.rank).order_by(desc(ScheduledInquiry.rank))
     ).first()
@@ -19,21 +25,40 @@ def create(*, session: Session, inquiry_id: UUID) -> ScheduledInquiry:
     session.add(db_inquiry)
     session.commit()
     session.refresh(db_inquiry)
-    return db_inquiry
+
+    return ScheduledInquiryPublic.model_validate(db_inquiry)
 
 
 def get_scheduled_inquiries(
     *, session: Session, skip: int = 0, limit: int = 100
-) -> list[ScheduledInquiry]:
+) -> list[ScheduledInquiryPublicWithInquiryText]:
     if skip < 0:
         raise ValueError("Invalid value for 'skip': it must be non-negative")
     if limit < 0:
         raise ValueError("Invalid value for 'limit': it must be non-negative")
 
-    statement = select(ScheduledInquiry).offset(skip).limit(limit)
-    scheduled_inquiries = session.exec(statement).all()
+    result = session.exec(
+        select(ScheduledInquiry.id, ScheduledInquiry.rank, Inquiry.id, Inquiry.text)
+        .join(Inquiry)
+        .where(ScheduledInquiry.inquiry_id == Inquiry.id)
+        .order_by(col(ScheduledInquiry.rank).asc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
 
-    return list(scheduled_inquiries)
+    inquiries = [
+        ScheduledInquiryPublicWithInquiryText(
+            id=scheduled_inquiry_id,
+            rank=rank,
+            inquiry_id=inquiry_id,
+            text=text,
+        )
+        for scheduled_inquiry_id, rank, inquiry_id, text in result
+    ]
+
+    print(f"---> {inquiries}")
+
+    return inquiries
 
 
 def get_count(*, session: Session) -> int:
