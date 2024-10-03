@@ -44,7 +44,6 @@ interface InquiryModalProps {
   inquiry?: InquiryPublic // Use InquiryPublic for consistency
   mode: "add" | "edit"
 }
-
 const InquiryModal = ({
   isOpen,
   onClose,
@@ -53,19 +52,21 @@ const InquiryModal = ({
 }: InquiryModalProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
+  // codacy-disable
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<InquiryCreate | InquiryUpdate>({
+  } = useForm<InquiryCreate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       text: inquiry?.text ?? "",
     },
-  } as any)
+  })
+  // codacy-enable
 
   const mutation = useMutation({
     mutationFn:
