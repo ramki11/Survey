@@ -76,7 +76,7 @@ const InquiryModal = ({
               ...inquiry,
               ...data,
               id: inquiry?.id ?? "",
-              created_at: inquiry!.created_at,
+              created_at: inquiry?.created_at,
             })
         : (data: InquiryCreate) =>
             InquiriesService.createInquiry({ requestBody: data }),

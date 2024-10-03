@@ -72,7 +72,7 @@ const InquiriesTable = () => {
       return await InquiriesService.updateInquiry(updatedInquiry)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inquiries"] })
+      void queryClient.invalidateQueries({ queryKey: ["inquiries"] })
       toast({
         title: "Inquiry updated successfully",
         status: "success",
@@ -81,7 +81,7 @@ const InquiriesTable = () => {
       })
       onClose()
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Error updating inquiry:", error)
 
       toast({
@@ -143,7 +143,9 @@ const InquiriesTable = () => {
                       <IconButton
                         aria-label="Edit Inquiry"
                         icon={<EditIcon />}
-                        onClick={() => handleEditClick(inquiry)}
+                        onClick={() => {
+                          handleEditClick(inquiry)
+                        }}
                       />
                     </Td>
                   </Tr>
