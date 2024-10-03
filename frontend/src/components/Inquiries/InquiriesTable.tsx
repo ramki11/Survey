@@ -28,6 +28,9 @@ dayjs.extend(timezone)
 const InquiriesTable = () => {
   // Format ISO date to the user's timezone.
   // ex. Sep 17, 2024 14:13 PM
+  const queryClient = useQueryClient()
+  const toast = useToast() as ReturnType<typeof useToast>
+
   function formatDate(date: string): string {
     const invalidDateMessage = "Invalid Date"
     if (typeof date !== "string") return invalidDateMessage
@@ -58,10 +61,11 @@ const InquiriesTable = () => {
     })
   }, [inquiries])
 
-  const queryClient = useQueryClient()
-  const toast = useToast()
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure() as {
+    isOpen: boolean
+    onOpen: () => void
+    onClose: () => void
+  }
   const [selectedInquiry, setSelectedInquiry] = useState<
     InquiryPublic | undefined
   >(undefined)
@@ -79,14 +83,13 @@ const InquiriesTable = () => {
         duration: 3000,
         isClosable: true,
       })
-      onClose()
     },
-    onError: (error: unknown) => {
+    onError: (error: Error) => {
       console.error("Error updating inquiry:", error)
 
       toast({
         title: "Error updating inquiry",
-        description: error.message || "Something went wrong",
+        description: error ? "Something went wrong" : "",
         status: "error",
         duration: 5000,
         isClosable: true,
