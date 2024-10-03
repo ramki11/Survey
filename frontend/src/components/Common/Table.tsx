@@ -1,5 +1,5 @@
 import {
-  Table,
+  Table as ChakraTable,
   TableContainer,
   Tbody,
   Td,
@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react"
 import {
   type ColumnDef,
+  type Table as ReactTableType,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -25,7 +26,7 @@ export function DataTable<Data extends object>({
   columns,
   onRowClick,
 }: DataTableProps<Data>) {
-  const table = useReactTable<Data>({
+  const table: ReactTableType<Data> = useReactTable<Data>({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
@@ -33,7 +34,7 @@ export function DataTable<Data extends object>({
 
   return (
     <TableContainer>
-      <Table>
+      <ChakraTable>
         <Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Tr key={headerGroup.id}>
@@ -63,7 +64,7 @@ export function DataTable<Data extends object>({
             </Tr>
           ))}
         </Tbody>
-      </Table>
+      </ChakraTable>
     </TableContainer>
   )
 }
