@@ -40,7 +40,6 @@ function isValidUnicode(str: string): boolean {
 interface InquiryModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: () => void // Add this line
   inquiry?: InquiryPublic // Use InquiryPublic for consistency
   mode: "add" | "edit"
 }

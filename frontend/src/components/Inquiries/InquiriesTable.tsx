@@ -10,9 +10,8 @@ import {
   Thead,
   Tr,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
@@ -28,8 +27,6 @@ dayjs.extend(timezone)
 const InquiriesTable = () => {
   // Format ISO date to the user's timezone.
   // ex. Sep 17, 2024 14:13 PM
-  const queryClient = useQueryClient()
-  const toast = useToast()
 
   function formatDate(date: string): string {
     const invalidDateMessage = "Invalid Date"
@@ -69,47 +66,10 @@ const InquiriesTable = () => {
   const [selectedInquiry, setSelectedInquiry] = useState<
     InquiryPublic | undefined
   >(undefined)
-  const [editText, setEditText] = useState("")
-
-  const updateInquiryMutation = useMutation({
-    mutationFn: async (updatedInquiry: InquiryPublic) => {
-      return await InquiriesService.updateInquiry(updatedInquiry)
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["inquiries"] })
-      toast({
-        title: "Inquiry updated successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      })
-    },
-    onError: (error: Error) => {
-      console.error("Error updating inquiry:", error)
-
-      toast({
-        title: "Error updating inquiry",
-        description: error ? "Something went wrong" : "",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      })
-    },
-  })
 
   const handleEditClick = (inquiry: InquiryPublic) => {
     setSelectedInquiry(inquiry)
-    setEditText(inquiry.text)
     onOpen()
-  }
-
-  const handleSave = () => {
-    if (selectedInquiry) {
-      updateInquiryMutation.mutate({
-        ...selectedInquiry,
-        text: editText,
-      })
-    }
   }
 
   return (
@@ -166,7 +126,6 @@ const InquiriesTable = () => {
         isOpen={isOpen}
         onClose={onClose}
         mode={selectedInquiry ? "edit" : "add"}
-        onSave={handleSave}
         inquiry={selectedInquiry}
       />
     </>
