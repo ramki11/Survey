@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.post("/", response_model=ScheduledInquiryPublic)
-def create_scheduled_inquiry(
+def add_to_schedule(
     *,
     session: SessionDep,
     scheduled_inquiry_in: ScheduledInquiryCreate,
