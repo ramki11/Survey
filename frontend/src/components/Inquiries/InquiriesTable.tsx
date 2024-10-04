@@ -15,9 +15,8 @@ import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
+import { formatISODateToUserTimezone } from "../../utils/"
 import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
-
-import { formatDate } from "../../utils/"
 
 const InquiriesTable = () => {
   function getInquiriesQueryOptions() {
@@ -81,7 +80,7 @@ const InquiriesTable = () => {
                   <Tr key={inquiry.id} data-testid="inquiry-row">
                     <Td data-testid="inquiry-text">{inquiry.text}</Td>
                     <Td data-testid="inquiry-datetime">
-                      {formatDate(inquiry.created_at)}
+                      {formatISODateToUserTimezone(inquiry.created_at)}
                     </Td>
                     <Td>
                       <IconButton
