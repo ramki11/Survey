@@ -12,17 +12,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
-import dayjs from "dayjs"
-import timezone from "dayjs/plugin/timezone"
-import utc from "dayjs/plugin/utc"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
 import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
 
-// Dayjs Configurations
-dayjs.extend(utc)
-dayjs.extend(timezone)
+import { formatDate } from "../../utils/"
 
 const InquiriesTable = () => {
   function getInquiriesQueryOptions() {
