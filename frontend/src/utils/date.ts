@@ -24,7 +24,6 @@ export const DATE_PARSING_ERROR_MESSAGE = "Error parsing the date"
  *  Input: "2024-09-23T12:00:00"
  *  Output: "Sep 23, 2024 08:00AM" (if user's in America/New_York timezone)
  */
-<<<<<<< HEAD
 export const formatISODateToUserTimezone = (date: string): string => {
   if (typeof date !== "string") {
     throw new Error(INVALID_DATE_TYPE_ERROR_MESSAGE)
@@ -33,14 +32,6 @@ export const formatISODateToUserTimezone = (date: string): string => {
   if (!isISODateTimeString(date)) {
     throw new Error(ISO_DATE_FORMAT_ERROR_MESSAGE)
   }
-=======
-export const formatDate = (date: string): string => {
-  // dayjs plugins
-  /* eslint-disable */
-  dayjs.extend(utc)
-  dayjs.extend(timezone)
-  /* eslint-enable */
->>>>>>> 63b8f8b (dayjs plugin lint)
 
   // Unsafe access to 'error' typed value is handled by dayjs' isValid function
   /* eslint-disable */
