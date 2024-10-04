@@ -56,8 +56,6 @@ def get_scheduled_inquiries(
         for scheduled_inquiry_id, rank, inquiry_id, text in result
     ]
 
-    print(f"---> {inquiries}")
-
     return inquiries
 
 
