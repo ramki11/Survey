@@ -58,7 +58,7 @@ const InquiryModal = ({
     reset,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<InquiryCreate>({
+  } = useForm<InquiryCreate | InquiryUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -109,7 +109,7 @@ const InquiryModal = ({
 
   useEffect(() => {
     if (mode === "edit" && inquiry) {
-      setValue("text", inquiry?.text)
+      setValue("text", inquiry.text)
     }
   }, [mode, inquiry, setValue])
 
@@ -121,12 +121,7 @@ const InquiryModal = ({
       isCentered
     >
       <ModalOverlay />
-      <ModalContent
-        as="form"
-        onSubmit={handleSubmit(
-          onSubmit as SubmitHandler<InquiryCreate | InquiryUpdate>,
-        )}
-      >
+      <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
         <ModalHeader
           id={
             mode === "edit"
@@ -138,14 +133,14 @@ const InquiryModal = ({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <FormControl isInvalid={!!errors?.text}>
+          <FormControl isInvalid={!!errors.text}>
             <FormLabel htmlFor="text">Inquiry Text</FormLabel>
             <Textarea
               id="text"
               data-testid={
                 mode === "edit" ? "edit-inquiry-text" : "add-inquiry-text"
               }
-              {...register("text" as const, {
+              {...register("text", {
                 required: "Inquiry text is required.",
                 minLength: {
                   value: MIN_INQUIRY_LENGTH,
@@ -165,8 +160,8 @@ const InquiryModal = ({
                   : "Enter the text of your inquiry."
               }
             />
-            {"text" in errors && (
-              <FormErrorMessage>{errors.text?.message}</FormErrorMessage>
+            {errors.text && (
+              <FormErrorMessage>{errors.text.message}</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
