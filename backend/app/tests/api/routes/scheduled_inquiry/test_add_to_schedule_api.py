@@ -1,8 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from app.models import InquiryCreate
-from app.services import inquiries as inquiries_service
+from app.models import Inquiry
 from app.tests.utils.api_post import api_post
 
 route_prefix = "scheduledinquiries"
@@ -28,9 +27,14 @@ def test_add_to_schedule_when_called_with_invalid_inquiry_id_returns_422(
 def test_post_scheduled_inquiry_when_called_with_inquiry_id_that_exists_should_return_scheduled_inquiry(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    inquiry_in = InquiryCreate(text="Testing the happy path")
-    db_inquiry = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in)
-    test_dto = {"inquiry_id": str(db_inquiry.id)}
+    inquiry_1 = Inquiry(text="Testing the happy path")
+
+    db.add(inquiry_1)
+    db.commit()
+
+    db.refresh(inquiry_1)
+
+    test_dto = {"inquiry_id": str(inquiry_1.id)}
 
     content = api_post(
         client=client,
