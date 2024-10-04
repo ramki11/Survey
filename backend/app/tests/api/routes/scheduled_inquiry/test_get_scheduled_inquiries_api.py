@@ -2,9 +2,7 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.core.config import settings
-from app.models import InquiryCreate
-from app.services import inquiries as inquiries_service
-from app.services import scheduled_inquiries as scheduled_inquiries_service
+from app.models import Inquiry, ScheduledInquiry
 
 path = f"{settings.API_V1_STR}/scheduledinquiries/"
 
@@ -14,19 +12,27 @@ def test_get_scheduled_inquiries_when_scheduled_inquiries_exist_should_return_al
     superuser_token_headers: dict[str, str],
     db: Session,
 ) -> None:
-    # Setup
-    inquiry_in_1 = InquiryCreate(text="Test inquiry 1.")
-    inquiry_in_2 = InquiryCreate(text="Test inquiry 2.")
-    db_inquiry_1 = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in_1)
-    db_inquiry_2 = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in_2)
+    inquiry_1 = Inquiry(text="Test inquiry 1.")
+    inquiry_2 = Inquiry(text="Test inquiry 2.")
+
+    db.add(inquiry_1)
+    db.add(inquiry_2)
+    db.commit()
+
+    db.refresh(inquiry_1)
+    db.refresh(inquiry_2)
 
     response = client.get(path, headers=superuser_token_headers)
 
     json = response.json()
     initial_count = json["count"]
 
-    scheduled_inquiries_service.create(session=db, inquiry_id=db_inquiry_1.id)
-    scheduled_inquiries_service.create(session=db, inquiry_id=db_inquiry_2.id)
+    scheduled_inquiry_1 = ScheduledInquiry(inquiry_id=inquiry_1.id, rank=1)
+    scheduled_inquiry_2 = ScheduledInquiry(inquiry_id=inquiry_1.id, rank=2)
+
+    db.add(scheduled_inquiry_1)
+    db.add(scheduled_inquiry_2)
+    db.commit()
 
     response = client.get(path, headers=superuser_token_headers)
 
