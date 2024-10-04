@@ -11,13 +11,13 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react"
+import type { UseDisclosureProps } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import * as InquiriesService from "../../client/services/inquiriesService.ts"
 import { formatISODateToUserTimezone } from "../../utils/date.ts"
 import AddOrEditInquiryModal from "./AddOrEditInquiryModal.tsx"
-
 const InquiriesTable = () => {
   function getInquiriesQueryOptions() {
     return {
@@ -38,11 +38,7 @@ const InquiriesTable = () => {
     })
   }, [inquiries])
 
-  const { isOpen, onOpen, onClose } = useDisclosure() as {
-    isOpen: boolean
-    onOpen: () => void
-    onClose: () => void
-  }
+  const { isOpen, onOpen, onClose } = useDisclosure<UseDisclosureProps>()
   const [selectedInquiry, setSelectedInquiry] = useState<
     InquiryPublic | undefined
   >(undefined)
