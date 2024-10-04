@@ -11,7 +11,6 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react"
-import type { UseDisclosureProps } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
@@ -38,7 +37,7 @@ const InquiriesTable = () => {
     })
   }, [inquiries])
 
-  const { isOpen, onOpen, onClose } = useDisclosure<UseDisclosureProps>()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedInquiry, setSelectedInquiry] = useState<
     InquiryPublic | undefined
   >(undefined)
