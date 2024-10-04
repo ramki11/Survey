@@ -3,17 +3,20 @@ from collections.abc import Generator
 import pytest
 from sqlmodel import Session
 
-from app.models import Inquiry, InquiryCreate, ScheduledInquiry
-from app.services import inquiries as inquiries_service
+from app.models import Inquiry, ScheduledInquiry
 from app.services import scheduled_inquiries as scheduled_inquiries_service
 
 
 @pytest.fixture
 def db_inquiry(db: Session) -> Generator[Inquiry]:
-    inquiry_in = InquiryCreate(text="I am test inquiry.")
-    db_inquiry = inquiries_service.create_inquiry(session=db, inquiry_in=inquiry_in)
-    yield db_inquiry
-    db.delete(db_inquiry)
+    inquiry = Inquiry(text="I am a test inquiry")
+    db.add(inquiry)
+    db.commit()
+    db.refresh(inquiry)
+
+    yield inquiry
+
+    db.delete(inquiry)
 
 
 def test_create_when_no_scheduled_inquiries_exist_should_assign_rank_1(
@@ -33,7 +36,7 @@ def test_create_when_no_scheduled_inquiries_exist_should_assign_rank_1(
     assert db_scheduled_inquiry.rank == expected_rank
 
 
-def test_create_when_scheduled_inquiries_exist_should_assign_correct_rank(
+def test_create_when_previous_highest_rank_is_1_should_assign_rank_2(
     db: Session, db_inquiry: Inquiry
 ) -> None:
     # First scheduled inquiry will have rank 1
