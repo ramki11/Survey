@@ -4,6 +4,7 @@ from app.api.routes import (
     inquiries,
     items,
     login,
+    schedule,
     scheduled_inquiries,
     themes,
     users,
@@ -22,3 +23,4 @@ api_router.include_router(
     prefix="/scheduledinquiries",
     tags=["scheduled_inquiries"],
 )
+api_router.include_router(schedule.router, prefix="/schedule", tags=["schedule"])
