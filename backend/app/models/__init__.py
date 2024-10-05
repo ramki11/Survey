@@ -20,7 +20,6 @@ from .inquiry import (
     InquiryUpdate,
     InquriesPublic,
 )
-from .item import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate
 from .response import Response, ResponseCreate, ResponsePublic, ResponsesPublic
 from .schedule import Schedule, ScheduleCreate, ScheduleData, SchedulePublic
 from .scheduled_inquiry import (
@@ -61,12 +60,6 @@ __all__ = [
     "ThemeCreate",
     "ThemePublic",
     "ThemesPublic",
-    # item model
-    "Item",
-    "ItemCreate",
-    "ItemPublic",
-    "ItemsPublic",
-    "ItemUpdate",
     # user model
     "User",
     "UserCreate",

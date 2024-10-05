@@ -1,5 +1,14 @@
 from fastapi import APIRouter
 
+from app.api.routes import (
+    inquiries,
+    login,
+    schedule,
+    scheduled_inquiries,
+    themes,
+    users,
+    utils,
+)
 from app.api.routes import inquiries, items, login, schedule, themes, users, utils
 
 api_router = APIRouter()
