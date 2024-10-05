@@ -1,13 +1,13 @@
 import {
   type CellContext,
   type ColumnDef,
-  type ColumnHelper,
+  type ColumnHelper as ColumnHelperType,
   createColumnHelper,
 } from "@tanstack/react-table"
 import type { InquiryPublic } from "../../client"
 import { formatDate } from "../../utils/dateUtils"
 
-const columnHelper: ColumnHelper<InquiryPublic> =
+const columnHelper: ColumnHelperType<InquiryPublic> =
   createColumnHelper<InquiryPublic>()
 
 export const columns: ColumnDef<InquiryPublic, string>[] = [
