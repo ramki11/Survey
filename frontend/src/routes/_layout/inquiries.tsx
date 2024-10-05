@@ -3,8 +3,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import Navbar from "../../components/Common/Navbar"
-import InquiryForm from "../../components/Inquiries/AddOrEditInquiryModal.tsx"
+import AddInquiry from "../../components/Inquiries/AddInquiry"
 import InquiriesTable from "../../components/Inquiries/InquiriesTable.tsx"
+import TimerPanel from "../../components/TimerPanel/TimerPanel.tsx"
+import InquiryForm from "../../components/Inquiries/AddOrEditInquiryModal.tsx"
 
 // Already typed by zod library https://zod.dev/
 // eslint-disable-next-line
@@ -28,8 +30,9 @@ export function Inquiries() {
         Inquiries Management
       </Heading>
 
-      <Navbar type={"Inquiry"} addModalAs={InquiryForm} />
+      <Navbar type={"Inquiry"} addModalAs={AddInquiry} />
       <InquiriesTable />
+      <TimerPanel />
     </Container>
   )
 }
