@@ -20,6 +20,7 @@ from .schedule import Schedule, ScheduleCreate, ScheduleData, SchedulePublic
 from .scheduled_inquiry import (
     ScheduledInquiriesPublic,
     ScheduledInquiry,
+    ScheduledInquiryBase,
     ScheduledInquiryCreate,
     ScheduledInquiryPublic,
 )
@@ -74,6 +75,7 @@ __all__ = [
     "ResponsesPublic",
     # scheduled_inquiry model
     "ScheduledInquiry",
+    "ScheduledInquiryBase",
     "ScheduledInquiryCreate",
     "ScheduledInquiryPublic",
     "ScheduledInquiriesPublic",
