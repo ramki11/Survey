@@ -20,6 +20,7 @@ import { useEffect } from "react"
 import { z } from "zod"
 
 import type { UserPublic } from "../../client"
+import type { UserPublic } from "../../client"
 import * as UsersService from "../../client/services/usersService"
 import AddUser from "../../components/Admin/AddUser"
 import ActionsMenu from "../../components/Common/ActionsMenu"
@@ -131,7 +132,6 @@ function UsersTable() {
                     <ActionsMenu
                       type="User"
                       value={user}
-                      disabled={currentUser?.id === user.id}
                       disabled={currentUser?.id === user.id}
                     />
                   </Td>
