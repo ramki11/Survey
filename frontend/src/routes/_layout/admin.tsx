@@ -20,7 +20,6 @@ import { useEffect } from "react"
 import { z } from "zod"
 
 import type { UserPublic } from "../../client"
-import type { UserPublic } from "../../client"
 import * as UsersService from "../../client/services/usersService"
 import AddUser from "../../components/Admin/AddUser"
 import ActionsMenu from "../../components/Common/ActionsMenu"
