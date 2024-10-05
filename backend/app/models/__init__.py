@@ -61,12 +61,6 @@ __all__ = [
     "ThemeCreate",
     "ThemePublic",
     "ThemesPublic",
-    # item model
-    "Item",
-    "ItemCreate",
-    "ItemPublic",
-    "ItemsPublic",
-    "ItemUpdate",
     # user model
     "User",
     "UserCreate",
