@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import type { InquiryPublic } from "../../client/models.ts"
-import * as InquiriesService from "../../client/services/inquiriesService.ts"
+import type { InquiryPublic } from "../../client"
+import { InquiriesService } from "../../client/services"
 import { formatISODateToUserTimezone } from "../../utils/date.ts"
 
 const InquiriesTable = () => {
@@ -41,7 +41,7 @@ const InquiriesTable = () => {
   // Sort inquiries from Newest to oldest
   const sortedInquiries = useMemo(() => {
     if (!inquiries?.data) return []
-    return inquiries.data.sort((a, b) => {
+    return inquiries.data.sort((a: InquiryPublic, b: InquiryPublic) => {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   }, [inquiries])
@@ -80,7 +80,7 @@ const InquiriesTable = () => {
           ) : (
             <Tbody>
               {sortedInquiries.length > 0 ? (
-                sortedInquiries.map((inquiry) => (
+                sortedInquiries.map((inquiry: InquiryPublic) => (
                   <Tr key={inquiry.id} data-testid="inquiry-row">
                     <Td data-testid="inquiry-text">{inquiry.text}</Td>
                     <Td data-testid="inquiry-datetime">
