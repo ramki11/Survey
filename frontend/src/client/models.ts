@@ -29,6 +29,12 @@ export type InquiryPublic = {
 
 
 
+export type InquiryUpdate = {
+	text: string;
+};
+
+
+
 export type InquriesPublic = {
 	data: Array<InquiryPublic>;
 	count: number;

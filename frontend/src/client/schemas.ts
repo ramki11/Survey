@@ -81,6 +81,17 @@ export const $InquiryPublic = {
 	},
 } as const;
 
+export const $InquiryUpdate = {
+	properties: {
+		text: {
+	type: 'string',
+	isRequired: true,
+	maxLength: 256,
+	minLength: 10,
+},
+	},
+} as const;
+
 export const $InquriesPublic = {
 	properties: {
 		data: {
