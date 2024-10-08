@@ -11,7 +11,7 @@ const InquiriesTable = () => {
   // Sort inquiries from Newest to oldest
   const sortedInquiries = useMemo(() => {
     if (!inquiries?.data) return []
-    return inquiries.data.sort((a, b) => {
+    return inquiries.data.sort((a: InquiryPublic, b: InquiryPublic) => {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   }, [inquiries])
