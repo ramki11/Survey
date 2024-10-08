@@ -17,7 +17,7 @@ import {
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
-  columns: ColumnDef<Data, unknown>[]
+  columns: ColumnDef<Data, string>[]
   onRowClick?: (row: Data) => void
 }
 
