@@ -171,6 +171,7 @@ describe("Inquiries Table", () => {
         )
       }
 
+      // eslint-disable-next-line security/detect-object-injection
       const dateCell = cells[createdAtIndex]
       const dateText = dateCell.textContent?.trim() ?? ""
       return new Date(dateText)
