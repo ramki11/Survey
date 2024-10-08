@@ -13,7 +13,13 @@ Important:
 """
 
 from .auth import Message, NewPassword, Token, TokenPayload, UpdatePassword
-from .inquiry import Inquiry, InquiryCreate, InquiryPublic, InquriesPublic
+from .inquiry import (
+    Inquiry,
+    InquiryCreate,
+    InquiryPublic,
+    InquiryUpdate,
+    InquriesPublic,
+)
 from .item import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate
 from .response import Response, ResponseCreate, ResponsePublic, ResponsesPublic
 from .schedule import Schedule, ScheduleCreate, ScheduleInfo, SchedulePublic
@@ -48,6 +54,7 @@ __all__ = [
     "InquiryCreate",
     "InquiryPublic",
     "InquiryPublic",
+    "InquiryUpdate",
     "InquriesPublic",
     # theme model
     "Theme",
