@@ -20,7 +20,7 @@ import { useEffect } from "react"
 import { z } from "zod"
 
 import type { UserPublic } from "../../client"
-import * as UsersService from "../../client/services/usersService"
+import { UsersService } from "../../client/services"
 import AddUser from "../../components/Admin/AddUser"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
@@ -39,7 +39,10 @@ const PER_PAGE = 5
 function getUsersQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      UsersService.readUsers({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      UsersService.usersReadUsers({
+        skip: (page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+      }),
     queryKey: ["users", { page }],
   }
 }
@@ -94,7 +97,7 @@ function UsersTable() {
             </Tbody>
           ) : (
             <Tbody>
-              {users?.data.map((user) => (
+              {users?.data.map((user: UserPublic) => (
                 <Tr key={user.id}>
                   <Td
                     color={!user.full_name ? "ui.dim" : "inherit"}

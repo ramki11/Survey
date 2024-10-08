@@ -15,7 +15,7 @@ Important:
 from .auth import Message, NewPassword, Token, TokenPayload, UpdatePassword
 from .inquiry import Inquiry, InquiryCreate, InquiryPublic, InquriesPublic
 from .response import Response, ResponseCreate, ResponsePublic, ResponsesPublic
-from .schedule import Schedule, ScheduleCreate, ScheduleData, SchedulePublic
+from .schedule import Schedule, ScheduleCreate, ScheduleInfo, SchedulePublic
 from .scheduled_inquiry import (
     ScheduledInquiriesPublic,
     ScheduledInquiry,
@@ -76,5 +76,5 @@ __all__ = [
     "Schedule",
     "ScheduleCreate",
     "SchedulePublic",
-    "ScheduleData",
+    "ScheduleInfo",
 ]
