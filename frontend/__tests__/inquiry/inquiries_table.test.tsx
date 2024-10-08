@@ -80,7 +80,6 @@ describe("Inquiries Table", () => {
     })
     renderComponent()
     const rows = screen.getAllByRole("row")
-    console.log("Number of rows:", rows.length)
     expect(rows.length).toBe(multipleInquiries.length + 1) // +1 for header
   })
 
@@ -125,6 +124,7 @@ describe("Inquiries Table", () => {
       isSuccess: true,
       refetch: jest.fn(),
     })
+
     renderComponent()
 
     // Find the index of the "Created At" column
@@ -132,10 +132,28 @@ describe("Inquiries Table", () => {
     const createdAtHeader = headerCells.find(
       (header) => header.textContent === "Created At",
     )
+
+    // Ensure the "Created At" header exists
     expect(createdAtHeader).toBeInTheDocument()
 
-    const createdAtIndex = headerCells.indexOf(createdAtHeader!)
-    expect(createdAtIndex).toBeGreaterThan(-1)
+    if (!createdAtHeader) {
+      throw new Error('"Created At" header not found in the table.')
+    }
+
+    const createdAtIndex = headerCells.indexOf(createdAtHeader)
+
+    // Validate createdAtIndex
+    const totalColumns = headerCells.length
+    if (
+      typeof createdAtIndex !== "number" ||
+      !Number.isInteger(createdAtIndex) ||
+      createdAtIndex < 0 ||
+      createdAtIndex >= totalColumns
+    ) {
+      throw new Error(
+        `Invalid index for "Created At" column: ${createdAtIndex}`,
+      )
+    }
 
     // Get all data rows excluding the header
     const allRows = screen.getAllByRole("row")
@@ -144,6 +162,15 @@ describe("Inquiries Table", () => {
     // Extract and parse dates from the "Created At" column
     const inquiryDates = dataRows.map((row) => {
       const cells = within(row).getAllByRole("cell")
+      const totalCells = cells.length
+
+      // Validate cells array and createdAtIndex
+      if (createdAtIndex >= totalCells) {
+        throw new Error(
+          `Row has fewer cells (${totalCells}) than expected index (${createdAtIndex})`,
+        )
+      }
+
       const dateCell = cells[createdAtIndex]
       const dateText = dateCell.textContent?.trim() ?? ""
       return new Date(dateText)
