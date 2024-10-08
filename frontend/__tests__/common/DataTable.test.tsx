@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { DataTable } from "../../src/components/Common/Table"
 import "@testing-library/jest-dom"
-import type { CellContext } from "@tanstack/react-table"
 
 type TestData = {
   id: string
@@ -13,12 +12,12 @@ const columns = [
   {
     header: "Name",
     accessorKey: "name",
-    cell: (info: CellContext<TestData, string>) => info.getValue(),
+    cell: (info: any) => info.getValue(),
   },
   {
     header: "Value",
     accessorKey: "value",
-    cell: (info: CellContext<TestData, string>) => info.getValue(),
+    cell: (info: any) => info.getValue(),
   },
 ]
 
