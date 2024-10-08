@@ -9,7 +9,6 @@ import {
   Tr,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
-import { useMemo } from "react"
 import type { InquiryPublic } from "../../client"
 import { InquiriesService } from "../../client/services"
 import { formatISODateToUserTimezone } from "../../utils/date.ts"
