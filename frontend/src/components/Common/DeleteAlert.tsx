@@ -16,7 +16,7 @@ import useCustomToast from "../../hooks/useCustomToast"
 
 interface DeleteProps {
   type: string
-  id: string
+  id: number
   isOpen: boolean
   onClose: () => void
 }
@@ -30,10 +30,8 @@ const Delete = ({ type, id, isOpen, onClose }: DeleteProps) => {
     formState: { isSubmitting },
   } = useForm()
 
-  const deleteEntity = async (id: string) => {
-    if (type === "Item") {
-      await ItemsService.itemsDeleteItem({ id: id })
-    } else if (type === "User") {
+  const deleteEntity = async (id: number) => {
+    if (type === "User") {
       await UsersService.usersDeleteUser({ userId: id })
     } else {
       throw new Error(`Unexpected type: ${type}`)
