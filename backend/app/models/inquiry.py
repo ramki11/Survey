@@ -24,6 +24,10 @@ class InquiryCreate(InquiryBase):
     text: str = Field(min_length=MIN_LENGTH, max_length=MAX_LENGTH)
 
 
+class InquiryUpdate(InquiryBase):
+    text: str = Field(min_length=MIN_LENGTH, max_length=MAX_LENGTH)
+
+
 # Database model, database table inferred from class name
 class Inquiry(InquiryBase, IdMixin, table=True):
     text: str = Field(min_length=MIN_LENGTH, max_length=MAX_LENGTH, unique=True)

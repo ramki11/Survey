@@ -1,6 +1,7 @@
 from sqlmodel import Session, func, select
 
 from app.models import Inquiry, InquiryCreate
+from app.models.inquiry import InquiryUpdate
 
 
 def create_inquiry(*, session: Session, inquiry_in: InquiryCreate) -> Inquiry:
@@ -38,3 +39,20 @@ def get_inquiries(
 def count_inquiries(*, session: Session) -> int:
     statement = select(func.count()).select_from(Inquiry)
     return session.exec(statement).one()
+
+
+def edit_inquiry(
+    *, session: Session, inquiry_id: int, inquiry_update: InquiryUpdate
+) -> Inquiry:
+    db_inquiry = get_inquiry_by_id(session=session, inquiry_id=inquiry_id)
+    if db_inquiry is None:
+        raise ValueError(f"Inquiry with id {inquiry_id} does not exist")
+
+    if (inquiry_update.text is not None) and (inquiry_update.text != db_inquiry.text):
+        db_inquiry.text = inquiry_update.text
+        session.add(db_inquiry)
+        session.commit()
+        session.refresh(db_inquiry)
+        return db_inquiry
+    else:
+        raise ValueError("No changes were made to the inquiry")
