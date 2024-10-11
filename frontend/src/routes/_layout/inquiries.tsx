@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import Navbar from "../../components/Common/Navbar"
-import AddInquiry from "../../components/Inquiries/AddInquiry.tsx"
+import AddInquiry from "../../components/Inquiries/AddInquiry"
 import InquiriesTable from "../../components/Inquiries/InquiriesTable.tsx"
 import TimerPanel from "../../components/TimerPanel/TimerPanel.tsx"
 
