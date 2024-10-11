@@ -61,8 +61,8 @@ export interface FormModalProps<T extends FieldValues> {
   isOpen: boolean
   onClose: () => void
   title: string
-  fields?: FieldDefinition<T>[] | Record<PropertyKey, never>
-  content?: React.ReactNode
+  fields: FieldDefinition<T>[]
+  content: React.ReactNode
   mutationFn: (data: T) => Promise<void>
   successMessage: string
   queryKeyToInvalidate?: string[]
@@ -73,8 +73,8 @@ const FormModal = <T extends FieldValues>({
   isOpen,
   onClose,
   title,
-  fields,
-  content,
+  fields = [],
+  content = "",
   mutationFn,
   successMessage,
   queryKeyToInvalidate,
@@ -83,7 +83,7 @@ const FormModal = <T extends FieldValues>({
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
-  const defaultValues: FieldDefinition<T> = fields?.reduce(
+  const defaultValues: FieldDefinition<T> = fields.reduce(
     (acc, field) => {
       if (field.defaultValue !== undefined) {
         acc[field.name] = field.defaultValue
@@ -138,8 +138,8 @@ const FormModal = <T extends FieldValues>({
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          {content && content}
-          {fields?.map((field) => {
+          {content}
+          {fields.map((field) => {
             const isError = !!errors[field.name]
             if (field.type === "textarea") {
               // For Textarea
