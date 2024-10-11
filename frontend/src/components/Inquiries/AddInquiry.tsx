@@ -11,6 +11,32 @@ interface AddInquiryProps {
 }
 
 const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
+  /*
+    const fields: FieldDefinition<InquiryCreate>[] = [
+    {
+      name: "text",
+      label: "Inquiry Text",
+      placeholder: "Enter the text of your inquiry.",
+      type: "textarea",
+      validation: {
+        required: "Inquiry text is required.",
+        minLength: {
+          value: MIN_INQUIRY_LENGTH,
+          message: `Inquiry must be at least ${MIN_INQUIRY_LENGTH} characters.`,
+        },
+        maxLength: {
+          value: MAX_INQUIRY_LENGTH,
+          message: `Inquiry can not be greater than ${MAX_INQUIRY_LENGTH} characters.`,
+        },
+        validate: (value: string) =>
+          isValidUnicode(value) || "Inquiry must be a valid unicode string.",
+      },
+      inputProps: {
+        "data-testid": "add-inquiry-text",
+      },
+    },
+  ]
+  */
   const mutationFn = async (data: InquiryCreate): Promise<void> => {
     await InquiriesService.inquiriesCreateInquiry({ requestBody: data })
   }
