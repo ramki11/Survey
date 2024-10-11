@@ -26,6 +26,7 @@ import {
   useForm,
 } from "react-hook-form"
 
+import type React from "react"
 import type { ApiError } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils/showToastOnError"
@@ -60,7 +61,8 @@ export interface FormModalProps<T extends FieldValues> {
   isOpen: boolean
   onClose: () => void
   title: string
-  fields: FieldDefinition<T>[]
+  fields?: FieldDefinition<T>[]
+  content: React.ReactNode
   mutationFn: (data: T) => Promise<void>
   successMessage: string
   queryKeyToInvalidate?: string[]
@@ -72,6 +74,7 @@ const FormModal = <T extends FieldValues>({
   onClose,
   title,
   fields,
+  content,
   mutationFn,
   successMessage,
   queryKeyToInvalidate,
@@ -80,16 +83,18 @@ const FormModal = <T extends FieldValues>({
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
-  const defaultValues: DefaultValues<T> = fields.reduce(
-    (acc, field) => {
-      if (field.defaultValue !== undefined) {
-        acc[field.name] = field.defaultValue
-      }
-      return acc
-    },
-    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-    {} as DefaultValues<T>,
-  )
+  const defaultValues: DefaultValues<T> = fields
+    ? fields.reduce(
+        (acc, field) => {
+          if (field.defaultValue !== undefined) {
+            acc[field.name] = field.defaultValue
+          }
+          return acc
+        },
+        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+        {} as DefaultValues<T>,
+      )
+    : []
 
   const {
     register,
@@ -135,7 +140,8 @@ const FormModal = <T extends FieldValues>({
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          {fields.map((field) => {
+          {content && content}
+          {fields?.map((field) => {
             const isError = !!errors[field.name]
             if (field.type === "textarea") {
               // For Textarea
