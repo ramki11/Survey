@@ -61,8 +61,8 @@ export interface FormModalProps<T extends FieldValues> {
   isOpen: boolean
   onClose: () => void
   title: string
-  fields: FieldDefinition<T>[]
-  content: React.ReactNode
+  fields?: FieldDefinition<T>[]
+  content?: React.ReactNode
   mutationFn: (data: T) => Promise<void>
   successMessage: string
   queryKeyToInvalidate?: string[]
