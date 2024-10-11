@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import type { InquiryPublic } from "../../client/models.ts"
 import { useInquiries } from "../../hooks/useInquiries.ts"
 import { DataTable } from "../Common/Table.tsx"
-import { columns } from "./InquiriesTable.columns.ts"
+import { columns } from "./InquiriesTable.columns.tsx"
 
 const InquiriesTable = () => {
   const { data: inquiries, isLoading } = useInquiries()
