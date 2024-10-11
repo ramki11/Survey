@@ -83,7 +83,7 @@ const FormModal = <T extends FieldValues>({
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
-  const defaultValues: FieldDefinition<T> = fields.reduce(
+  const defaultValues: DefaultValues<T> = fields.reduce(
     (acc, field) => {
       if (field.defaultValue !== undefined) {
         acc[field.name] = field.defaultValue
