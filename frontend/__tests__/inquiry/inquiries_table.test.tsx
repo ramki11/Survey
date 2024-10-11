@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import InquiriesTable from "../../src/components/Inquiries/InquiriesTable"
 import "@testing-library/jest-dom"
@@ -57,7 +54,13 @@ describe("Inquiries Table", () => {
     },
   ]
 
-  const renderComponent = () => render(<InquiriesTable />)
+  const queryClient = new QueryClient()
+  const renderComponent = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <InquiriesTable />
+      </QueryClientProvider>,
+    )
 
   beforeEach(() => {
     jest.clearAllMocks()
