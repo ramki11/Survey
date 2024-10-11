@@ -61,8 +61,8 @@ export interface FormModalProps<T extends FieldValues> {
   isOpen: boolean
   onClose: () => void
   title: string
-  fields?: FieldDefinition<T>[]
-  content: React.ReactNode
+  fields?: FieldDefinition<T>[] | Record<PropertyKey, never>
+  content?: React.ReactNode
   mutationFn: (data: T) => Promise<void>
   successMessage: string
   queryKeyToInvalidate?: string[]
@@ -83,18 +83,17 @@ const FormModal = <T extends FieldValues>({
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
 
-  const defaultValues: DefaultValues<T> = fields
-    ? fields.reduce(
-        (acc, field) => {
-          if (field.defaultValue !== undefined) {
-            acc[field.name] = field.defaultValue
-          }
-          return acc
-        },
-        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-        {} as DefaultValues<T>,
-      )
-    : []
+  const defaultValues: FieldDefinition<T> =
+    fields?.reduce(
+      (acc, field) => {
+        if (field.defaultValue !== undefined) {
+          acc[field.name] = field.defaultValue
+        }
+        return acc
+      },
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+      {} as DefaultValues<T>,
+    ) || {}
 
   const {
     register,
