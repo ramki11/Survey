@@ -5,7 +5,7 @@ import SimpleModal, {
   type SimpleModalProps,
 } from "../../src/components/Common/SimpleModal"
 
-describe.skip("SimpleModal", () => {
+describe("SimpleModal", () => {
   const mockOnClose = jest.fn()
   const mockOnSubmit = jest.fn()
 
