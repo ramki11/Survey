@@ -55,13 +55,12 @@ describe("Inquiries Table", () => {
   ]
 
   const queryClient = new QueryClient()
-  const renderComponent = () => {
-    return render(
+  const renderComponent = () =>
+    render(
       <QueryClientProvider client={queryClient}>
         <InquiriesTable />
       </QueryClientProvider>,
     )
-  }
 
   beforeEach(() => {
     jest.clearAllMocks()

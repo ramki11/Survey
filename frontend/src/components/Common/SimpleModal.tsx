@@ -39,7 +39,13 @@ const SimpleModal = ({
         <ModalCloseButton />
         <ModalBody pb={6}>{content}</ModalBody>
         <ModalFooter gap={3}>
-          <Button variant="primary" type="submit" onClick={() => onSubmit()}>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={() => {
+              onSubmit()
+            }}
+          >
             {submitButtonText ?? "Submit"}
           </Button>
           <Button onClick={onClose}>Cancel</Button>

@@ -39,8 +39,12 @@ const AddScheduledInquiry = ({ inquiry }: AddScheduledInquiryProps) => {
     mutation.mutate({ inquiry_id: inquiry.id })
   }
 
-  const openModal = () => setModalOpen(true)
-  const closeModal = () => setModalOpen(false)
+  const openModal = () => {
+    setModalOpen(true)
+  }
+  const closeModal = () => {
+    setModalOpen(false)
+  }
 
   return (
     <>
