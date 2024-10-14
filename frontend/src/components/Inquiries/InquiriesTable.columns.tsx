@@ -6,11 +6,16 @@ import {
 } from "@tanstack/react-table"
 import type { InquiryPublic } from "../../client"
 import { formatISODateToUserTimezone } from "../../utils/date"
+import AddScheduledInquiry from "../ScheduledInquiries/AddScheduledInquiry"
 
 const columnHelper: ColumnHelperType<InquiryPublic> =
   createColumnHelper<InquiryPublic>()
 
 export const columns: ColumnDef<InquiryPublic, string>[] = [
+  columnHelper.display({
+    header: "Action",
+    cell: ({ row }) => <AddScheduledInquiry inquiry={row.original} />,
+  }),
   columnHelper.accessor("text", {
     header: "Text",
     cell: (info: CellContext<InquiryPublic, string>) => info.getValue(),
