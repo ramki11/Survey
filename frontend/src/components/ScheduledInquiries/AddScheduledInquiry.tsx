@@ -9,7 +9,7 @@ import {
 } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils/showToastOnError"
-import SimpleModal from "../Common/SimpleModal"
+import ContentModal from "../Common/ContentModal"
 
 type AddScheduledInquiryProps = {
   inquiry: InquiryPublic
@@ -19,7 +19,7 @@ const AddScheduledInquiry = ({ inquiry }: AddScheduledInquiryProps) => {
   const [isModalOpen, setModalOpen] = useState(false)
 
   const addToScheduledInquiries = async (data: ScheduledInquiryCreate) => {
-    return ScheduledInquiriesService.scheduledInquiriesAddToSchedule({
+    return ScheduledInquiriesService.addToSchedule({
       requestBody: data,
     })
   }
@@ -49,11 +49,11 @@ const AddScheduledInquiry = ({ inquiry }: AddScheduledInquiryProps) => {
   return (
     <>
       <Button onClick={openModal}>Add to Schedule</Button>
-      <SimpleModal
+      <ContentModal
         isOpen={isModalOpen}
         onClose={closeModal}
         onSubmit={handleSubmit}
-        title={`You're about ot add this inquiry to the schedule. Are you sure?`}
+        title={`You're about to add this inquiry to the schedule. Are you sure?`}
         content={<span>{inquiry.text}</span>}
         submitButtonText="Continue"
       />
