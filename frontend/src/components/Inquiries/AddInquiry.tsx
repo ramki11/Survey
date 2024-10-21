@@ -1,7 +1,7 @@
 import type { InquiryCreate } from "../../client/models"
 import { InquiriesService } from "../../client/services"
-// import { isValidUnicode } from "../../utils/validation"
-import FormModal from "../Common/FormModal"
+import { isValidUnicode } from "../../utils/validation"
+import FormModal, { type FieldDefinition } from "../Common/FormModal"
 
 export const MIN_INQUIRY_LENGTH = 10
 export const MAX_INQUIRY_LENGTH = 256
@@ -12,8 +12,7 @@ interface AddInquiryProps {
 }
 
 const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
-  /*
-    const fields: FieldDefinition<InquiryCreate>[] = [
+  const fields: FieldDefinition<InquiryCreate>[] = [
     {
       name: "text",
       label: "Inquiry Text",
@@ -37,17 +36,17 @@ const AddInquiry = ({ isOpen, onClose }: AddInquiryProps) => {
       },
     },
   ]
-  */
+
   const mutationFn = async (data: InquiryCreate): Promise<void> => {
+    console.log("adding data")
     await InquiriesService.createInquiry({ requestBody: data })
   }
-  const content = "Why do birds suddenly appear every time you are near?"
   return (
     <FormModal<InquiryCreate>
       isOpen={isOpen}
       onClose={onClose}
-      title="Why birds?"
-      content={content}
+      title="Add Inquiry"
+      fields={fields}
       mutationFn={mutationFn}
       successMessage="Inquiry created successfully."
       queryKeyToInvalidate={["inquiries"]}
