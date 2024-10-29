@@ -1,7 +1,10 @@
+import json
+import os
 import secrets
 import warnings
 from typing import Annotated, Any, Literal
 
+import boto3
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -32,7 +35,54 @@ class Settings(BaseSettings):
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     DOMAIN: str = "localhost"
-    ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "local")
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        user = ""
+        password = ""
+        endpoint = ""
+        database_name = ""
+
+        if self.ENVIRONMENT in ["staging", "prod"]:
+            secret_name = f"{self.ENVIRONMENT}/survey/rds"
+            secret = self.get_secret(secret_name)
+
+            if secret:
+                user = secret.get("username")
+                password = secret.get("password")
+                endpoint = secret.get("host")
+                database_name = "postgres"  # secret.get('dbInstanceIdentifier')
+        else:
+            user = self.POSTGRES_USER
+            password = self.POSTGRES_PASSWORD
+            endpoint = self.POSTGRES_SERVER
+            database_name = self.POSTGRES_DB
+
+        return MultiHostUrl.build(
+            scheme="postgresql+psycopg",
+            username=user,
+            password=password,
+            host=endpoint,
+            port=self.POSTGRES_PORT,
+            path=database_name,
+        )
+
+    def get_secret(self, secret_name: str) -> dict:
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name="secretsmanager",
+            region_name=os.getenv("AWS_REGION", "us-west-2"),
+        )
+
+        try:
+            get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+            return json.loads(get_secret_value_response["SecretString"])
+        except Exception as e:
+            print(f"Error retrieving secret: {e}")
+            return None
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -53,18 +103,6 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
-        return MultiHostUrl.build(
-            scheme="postgresql+psycopg",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_SERVER,
-            port=self.POSTGRES_PORT,
-            path=self.POSTGRES_DB,
-        )
 
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
@@ -101,7 +139,7 @@ class Settings(BaseSettings):
                 f'The value of {var_name} is "changethis", '
                 "for security, please change it, at least for deployments."
             )
-            if self.ENVIRONMENT == "local":
+            if self.ENVIRONMENT == "local" or self.ENVIRONMENT == "staging":
                 warnings.warn(message, stacklevel=1)
             else:
                 raise ValueError(message)
