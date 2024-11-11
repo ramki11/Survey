@@ -1,0 +1,17 @@
+name: Run on Demand
+
+on:
+  workflow_dispatch:  # This allows the workflow to be manually triggered
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Deploy to ECS Fargate
+        run: |
+          echo "Running deployment workflow on demand"
+          # Insert deployment commands here, e.g., docker build and deploy to ECS
