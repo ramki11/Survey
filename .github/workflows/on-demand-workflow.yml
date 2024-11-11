@@ -3,15 +3,61 @@ name: Run on Demand
 on:
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
+env:
+  AWS_REGION: us-west-2                                 # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: incredihire/survey                            # set this to your Amazon ECR repository name
+  ECS_SERVICE: testbyramki-service                       # set this to your Amazon ECS service name
+  ECS_CLUSTER: Survey                               # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: testbyramki-task-definition.json  # set this to the path to your Amazon ECS task definition
+                                                        # file, e.g. .aws/task-definition.json
+  CONTAINER_NAME: testbyramki                           # set this to the name of the container in the
+                                                        # containerDefinitions section of your task definition
+
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
+  build-and-deploy:
+    runs-on: [ubuntu-latest]
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v4
 
-      - name: Deploy to ECS Fargate
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+        with:
+          mask-password: 'true'
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          echo "Running deployment workflow on demand"
-          # Insert deployment commands here, e.g., docker build and deploy to ECS
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
