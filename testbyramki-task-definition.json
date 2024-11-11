@@ -1,5 +1,5 @@
 {
-   "taskDefinitionArn": "arn:aws:ecs:us-west-2:913524926070:task-definition/testbyramki-task-definition:3",
+   "taskDefinitionArn": "arn:aws:ecs:us-west-2:913524926070:task-definition/survey-task-definition:3",
     "containerDefinitions": [
         {
             "name": "testbyramki",
@@ -7,7 +7,7 @@
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "testbyramki-5000-tcp",
+                    "name": "survey-5000-tcp",
                     "containerPort": 5000,
                     "hostPort": 5000,
                     "protocol": "tcp",
@@ -33,7 +33,7 @@
             "systemControls": []
         }
     ],
-    "family": "testbyramki-task-definition",
+    "family": "survey-task-definition",
     "taskRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
