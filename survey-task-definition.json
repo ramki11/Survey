@@ -2,7 +2,7 @@
    "taskDefinitionArn": "arn:aws:ecs:us-west-2:913524926070:task-definition/survey-task-definition:3",
     "containerDefinitions": [
         {
-            "name": "testbyramki",
+            "name": "survey",
             "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/incredihire/survey:latest",
             "cpu": 0,
             "portMappings": [
