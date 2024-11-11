@@ -14,9 +14,6 @@ env:
                                                         # containerDefinitions section of your task definition
 
 jobs:
-
-jobs:
-
   test:
     runs-on: ubuntu-latest
     steps:
