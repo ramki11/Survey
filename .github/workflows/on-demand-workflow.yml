@@ -11,9 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -35,6 +40,24 @@ jobs:
         with:
           mask-password: 'true'
 
+      - name: Copy env
+        run: cp .env.example .env
+
+      - run: docker compose build
+      - run: docker compose down -v --remove-orphans
+      - run: docker compose up -d
+      - name: Lint
+        run: docker compose exec -T backend bash /app/scripts/lint.sh
+      - name: Run tests
+        run: docker compose exec -T backend bash /app/tests-start.sh "Coverage for ${{ github.sha }}"
+      - run: docker compose down -v --remove-orphans
+      - name: Store coverage files
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: backend/htmlcov
+          include-hidden-files: true
+          
       - name: Build and push Docker images
         id: build-image
         run: |
@@ -46,7 +69,6 @@ jobs:
           ECR_REPOSITORY_MAILCATCHER=survey/mailcatcher
           ECR_REPOSITORY_DB=survey/postgres
           ECR_REPOSITORY_PROXY=survey/traefik
-          docker-compose build
           docker tag survey/survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
           docker tag survey/survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
