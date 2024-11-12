@@ -5,12 +5,12 @@ on:
 
 env:
   AWS_REGION: us-west-2                                 # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: incredihire/survey                            # set this to your Amazon ECR repository name
-  ECS_SERVICE: survey-service                       # set this to your Amazon ECS service name
-  ECS_CLUSTER: Survey                               # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: survey-task-definition.json  # set this to the path to your Amazon ECS task definition
+  #ECR_REPOSITORY: incredihire/survey                            # set this to your Amazon ECR repository name
+  #ECS_SERVICE: survey-service                       # set this to your Amazon ECS service name
+  #ECS_CLUSTER: Survey                               # set this to your Amazon ECS cluster name
+  #ECS_TASK_DEFINITION: survey-task-definition.json  # set this to the path to your Amazon ECS task definition
                                                         # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: survey                           # set this to the name of the container in the
+  #CONTAINER_NAME: survey                           # set this to the name of the container in the
 
 jobs:
   build-and-deploy-to-ECR:
@@ -43,22 +43,4 @@ jobs:
           docker tag survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ecs-task-definition.json
-          container-name-backend: survey_backend
-          container-name-frontend: survey_frontend
-          image-backend: ${{ steps.build-image.outputs.image }}
-          image-frontend: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: fastapi-app-service
-          cluster: fastapi-app-cluster
-          wait-for-service-stability: true
 
