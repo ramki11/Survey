@@ -39,15 +39,6 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           mask-password: 'true'
-
-      - name: Copy env
-        run: cp .env.example .env
-
-      - run: docker compose build
-      - run: docker compose down -v --remove-orphans
-      - run: docker compose up -d
-      - name: Lint
-        run: docker compose exec -T backend bash /app/scripts/lint.sh
           
       - name: Build and push Docker images
         id: build-image
@@ -60,6 +51,7 @@ jobs:
           ECR_REPOSITORY_MAILCATCHER=survey/mailcatcher
           ECR_REPOSITORY_DB=survey/postgres
           ECR_REPOSITORY_PROXY=survey/traefik
+          cp .env.example .env
           docker compose build
           docker compose down -v --remove-orphans
           docker compose up -d
