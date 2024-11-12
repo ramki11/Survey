@@ -3,6 +3,9 @@ name: Run on Demand
 on:
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
+env:
+  AWS_REGION: us-west-2
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
