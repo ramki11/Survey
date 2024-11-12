@@ -60,8 +60,8 @@ jobs:
           ECR_REPOSITORY_MAILCATCHER=survey/mailcatcher
           ECR_REPOSITORY_DB=survey/postgres
           ECR_REPOSITORY_PROXY=survey/traefik
-          docker tag survey-backend-1:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
-          docker tag survey-frontend-1:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+          docker tag survey-backend-1 $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          docker tag survey-frontend-1 $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
 
