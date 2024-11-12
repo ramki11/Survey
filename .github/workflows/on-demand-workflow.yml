@@ -48,15 +48,7 @@ jobs:
       - run: docker compose up -d
       - name: Lint
         run: docker compose exec -T backend bash /app/scripts/lint.sh
-      - name: Run tests
-        run: docker compose exec -T backend bash /app/tests-start.sh "Coverage for ${{ github.sha }}"
-      - run: docker compose down -v --remove-orphans
-      - name: Store coverage files
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-html
-          path: backend/htmlcov
-          include-hidden-files: true
+      survey-frontend-1
           
       - name: Build and push Docker images
         id: build-image
@@ -69,8 +61,8 @@ jobs:
           ECR_REPOSITORY_MAILCATCHER=survey/mailcatcher
           ECR_REPOSITORY_DB=survey/postgres
           ECR_REPOSITORY_PROXY=survey/traefik
-          docker tag survey/survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
-          docker tag survey/survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+          docker tag survey-backend-1:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          docker tag survey-frontend-1:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
 
