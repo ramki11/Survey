@@ -11,75 +11,54 @@ env:
   ECS_TASK_DEFINITION: survey-task-definition.json  # set this to the path to your Amazon ECS task definition
                                                         # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: survey                           # set this to the name of the container in the
-  
+
 jobs:
-  build-and-deploy:
+  build-and-deploy-to-ECR:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Copy env
-        run: cp .env.example .env
-
-      - run: docker compose build
-      - run: docker compose down -v --remove-orphans
-      - run: docker compose up -d
-      - name: Lint
-        run: docker compose exec -T backend bash /app/scripts/lint.sh
-      - name: Run tests
-        run: docker compose exec -T backend bash /app/tests-start.sh "Coverage for ${{ github.sha }}"
-      - run: docker compose down -v --remove-orphans
-      - name: Store coverage files
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-html
-          path: backend/htmlcov
-          include-hidden-files: true
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
-        with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
+      - name: Log in to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
-        with:
-          mask-password: 'true'
-
-      - name: Build, tag, and push image to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        
+      - name: Build and push Docker images
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker compose build
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+          IMAGE_TAG=latest
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY_BACKEND=survey/survey_backend
+          ECR_REPOSITORY_FRONTEND=survey/survey_frontend
+          ECR_REPOSITORY_ADMINER=survey/adminer
+          ECR_REPOSITORY_MAILCATCHER=survey/mailcatcher
+          ECR_REPOSITORY_DB=survey/postgres
+          ECR_REPOSITORY_PROXY=survey/traefik
+          docker-compose build
+          docker tag survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          docker tag survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+          task-definition: ecs-task-definition.json
+          container-name-backend: survey_backend
+          container-name-frontend: survey_frontend
+          image-backend: ${{ steps.build-image.outputs.image }}
+          image-frontend: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
+          service: fastapi-app-service
+          cluster: fastapi-app-cluster
           wait-for-service-stability: true
+
