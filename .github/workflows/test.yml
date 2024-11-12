@@ -1,6 +1,8 @@
 name: Test
 
-on: [push]
+on:
+  workflow_dispatch:  # This allows the workflow to be manually triggered
+  
 jobs:
 
   test:
