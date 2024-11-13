@@ -90,6 +90,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: fastapi-app-service
-          cluster: fastapi-app-cluster
+          service: survey
+          cluster: Survey
           wait-for-service-stability: true
