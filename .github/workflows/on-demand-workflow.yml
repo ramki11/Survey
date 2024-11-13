@@ -72,11 +72,19 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ecs-task-definition.json
+          task-definition: survey-task-definition.json
           container-name-backend: survey_backend
           container-name-frontend: survey_frontend
+          container-name-adminer: adminer
+          container-name-mailcatcher: schickling/mailcatcher
+          container-name-db: postgres
+          container-name-proxy: traefik
           image-backend: ${{ steps.build-image.outputs.image }}
           image-frontend: ${{ steps.build-image.outputs.image }}
+          image-adminer: ${{ steps.build-image.outputs.image }}
+          image-mailcatcher: ${{ steps.build-image.outputs.image }}
+          image-db: ${{ steps.build-image.outputs.image }}
+          image-proxy: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
