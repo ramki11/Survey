@@ -1,93 +1,130 @@
 {
-   "taskDefinitionArn": "arn:aws:ecs:us-west-2:913524926070:task-definition/survey-task-definition:3",
-    "containerDefinitions": [
+  "family": "survey",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "survey_backend",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
+      "essential": true,
+      "portMappings": [
         {
-            "name": "survey",
-            "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/incredihire/survey:latest",
-            "cpu": 0,
-            "portMappings": [
-                {
-                    "name": "survey-5000-tcp",
-                    "containerPort": 5000,
-                    "hostPort": 5000,
-                    "protocol": "tcp",
-                    "appProtocol": "http"
-                }
-            ],
-            "essential": true,
-            "environment": [],
-            "environmentFiles": [],
-            "mountPoints": [],
-            "volumesFrom": [],
-            "ulimits": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/testbyramki",
-                    "awslogs-region": "us-west-2",
-                    "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
-            },
-            "systemControls": []
+          "containerPort": 8888,
+          "hostPort": 8888
         }
-    ],
-    "family": "survey-task-definition",
-    "taskRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
-    "executionRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "revision": 4,
-    "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
+      ],
+      "environment": [
         {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.task-iam-role"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+          "name": "DATABASE_URL",
+          "value": "postgresql://postgres:password@db:5432/app"
         }
-    ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
-    "requiresCompatibilities": [
-        "FARGATE"
-     ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "1024",
-    "memory": "3072",
-    "registeredAt": "2024-11-08T23:50:08.625Z",
-    "registeredBy": "arn:aws:iam::913524926070:user/ramki.ratnakara",
-    "tags": []
+      ]
+    },
+    {
+      "name": "survey_frontend",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000
+        }
+      ]
+    },
+    {
+      "name": "adminer",
+      "image": "survey/adminer:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080
+        }
+      ]
+    },
+    {
+      "name": "mailcatcher",
+      "image": "survey/mailcatcher:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 1025,
+          "hostPort": 1025
+        },
+        {
+          "containerPort": 1080,
+          "hostPort": 1080
+        }
+      ]
+    },
+    {
+      "name": "postgres",
+      "image": "survey/postgres:12",
+      "essential": true,
+      "environment": [
+        {
+          "name": "POSTGRES_USER",
+          "value": "postgres"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "password"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "app"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "postgres_data",
+          "containerPath": "/var/lib/postgresql/data"
+        }
+      ]
+    },
+    {
+      "name": "traefik",
+      "image": "survey/traefik:3.0",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        },
+        {
+          "containerPort": 8080,
+          "hostPort": 8080
+        }
+      ],
+      "command": [
+        "--api.insecure=true",
+        "--providers.docker=true",
+        "--entrypoints.web.address=:80"
+      ],
+      "volumes": [
+        {
+          "name": "docker_sock",
+          "host": {
+            "sourcePath": "/var/run/docker.sock"
+          }
+        }
+      ]
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "volumes": [
+    {
+      "name": "postgres_data",
+      "host": {}
+    },
+    {
+      "name": "docker_sock",
+      "host": {
+        "sourcePath": "/var/run/docker.sock"
+      }
+    }
+  ]
 }
