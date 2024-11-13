@@ -1,12 +1,10 @@
-name: Run on Demand 2
+name: Run on Demand
 
 on:
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
 env:
   AWS_REGION: us-west-2
-  ECS_TASK_DEFINITION: survey-task-definition.json
-  ECS_CLUSTER: Survey
 
 jobs:
   build-and-deploy:
@@ -69,16 +67,23 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG
+        outputs:
+          backend_image: ${{ steps.login-ecr.outputs.registry }}/survey_backend:latest
+          frontend_image: ${{ steps.login-ecr.outputs.registry }}/survey_frontend:latest
+          adminer_image: ${{ steps.login-ecr.outputs.registry }}/adminer:latest
+          mailcatcher_image: ${{ steps.login-ecr.outputs.registry }}/schickling/mailcatcher:latest
+          db_image: ${{ steps.login-ecr.outputs.registry }}/postgres:12
+          proxy_image: ${{ steps.login-ecr.outputs.registry }}/traefik:3.0
 
       # Render and update task definition for each container individually
 
       - name: Fill in the new image ID for survey_backend
         id: task-def-backend
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          task-definition: survey-task-definition.json
           container-name: survey_backend
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.backend_image }}
 
       - name: Fill in the new image ID for survey_frontend
         id: task-def-frontend
@@ -86,7 +91,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
           container-name: survey_frontend
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.frontend_image }}
 
       - name: Fill in the new image ID for adminer
         id: task-def-adminer
@@ -94,7 +99,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
           container-name: adminer
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.adminer_image }}
 
       - name: Fill in the new image ID for mailcatcher
         id: task-def-mailcatcher
@@ -102,7 +107,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-adminer.outputs.task-definition }}
           container-name: mailcatcher
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.mailcatcher_image }}
 
       - name: Fill in the new image ID for postgres
         id: task-def-db
@@ -110,7 +115,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-mailcatcher.outputs.task-definition }}
           container-name: postgres
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.db_image }}
 
       - name: Fill in the new image ID for proxy
         id: task-def-proxy
@@ -118,7 +123,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-db.outputs.task-definition }}
           container-name: proxy
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.proxy_image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
