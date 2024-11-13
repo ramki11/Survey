@@ -28,7 +28,7 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        uses: aws-actions/configure-aws-credentials@v1
         with: 
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -43,7 +43,7 @@ jobs:
       - name: Build and push Docker images
         id: build-image
         run: |
-          IMAGE_TAG=latest2
+          IMAGE_TAG=latest
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY_BACKEND=survey_backend 
           ECR_REPOSITORY_FRONTEND=survey_frontend 
@@ -68,43 +68,18 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: survey-task-definition.json
-          container-name-backend: survey_backend
-          container-name-frontend: survey_frontend
-          container-name-adminer: adminer
-          container-name-mailcatcher: schickling/mailcatcher
-          container-name-db: postgres
-          container-name-proxy: traefik
-          image-backend: ${{ steps.build-image.outputs.image }}
-          image-frontend: ${{ steps.build-image.outputs.image }}
-          image-adminer: ${{ steps.build-image.outputs.image }}
-          image-mailcatcher: ${{ steps.build-image.outputs.image }}
-          image-db: ${{ steps.build-image.outputs.image }}
-          image-proxy: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: survey
-          cluster: Survey
-          wait-for-service-stability: true
-
       # Render and update task definition for each container individually
+
       - name: Fill in the new image ID for survey_backend
         id: task-def-backend
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-        	task-definition: survey-task-definition.json
-        	container-name: survey_backend
-        	image: ${{ steps.build-image.outputs.image }}
-         
+          task-definition: survey-task-definition.json
+          container-name: survey_backend
+          image: ${{ steps.build-image.outputs.image }}
+
       - name: Fill in the new image ID for survey_frontend
-  	    id: task-def-frontend
+        id: task-def-frontend
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
@@ -112,12 +87,12 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Fill in the new image ID for adminer
-	      id: task-def-adminer
-	      uses: aws-actions/amazon-ecs-render-task-definition@v1
-	      with:
-	         task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
-	         container-name: adminer
-	         image: ${{ steps.build-image.outputs.image }}
+        id: task-def-adminer
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
+          container-name: adminer
+          image: ${{ steps.build-image.outputs.image }}
 
       - name: Fill in the new image ID for mailcatcher
         id: task-def-mailcatcher
@@ -133,7 +108,7 @@ jobs:
         with:
           task-definition: ${{ steps.task-def-mailcatcher.outputs.task-definition }}
           container-name: postgres
-          image: ${{ steps.build-image.outputs.image }}                         
+          image: ${{ steps.build-image.outputs.image }}
 
       - name: Fill in the new image ID for proxy
         id: task-def-proxy
