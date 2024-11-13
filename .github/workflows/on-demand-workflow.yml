@@ -67,8 +67,8 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:12 
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:3.0
 
       # Render and update task definition for each container individually
 
