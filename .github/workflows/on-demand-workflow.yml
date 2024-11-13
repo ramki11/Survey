@@ -55,12 +55,12 @@ jobs:
           docker compose build
           docker compose down -v --remove-orphans
           docker compose up -d 
-          docker tag survey/survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
-          docker tag survey/survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
-          docker tag survey/adminer:latest $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
-          docker tag survey/mailcatcher:latest $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
-          docker tag survey/postgres:12 $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
-          docker tag survey/traefik:3.0 $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG 
+          docker tag survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
+          docker tag survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
+          docker tag adminer:latest $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
+          docker tag mailcatcher:latest $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
+          docker tag postgres:12 $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
+          docker tag traefik:3.0 $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
