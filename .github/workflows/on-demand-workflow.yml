@@ -61,8 +61,8 @@ jobs:
           docker tag survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
           docker tag adminer $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
           docker tag schickling/mailcatcher $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
-          docker tag postgres:12 $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
-          docker tag traefik:3.0 $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG 
+          docker tag postgres:12 $ECR_REGISTRY/$ECR_REPOSITORY_DB:12 
+          docker tag traefik:3.0 $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:3.0 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_ADMINER:$IMAGE_TAG 
