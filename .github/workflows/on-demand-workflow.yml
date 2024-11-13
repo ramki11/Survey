@@ -43,8 +43,8 @@ jobs:
       - name: Build and push Docker images
         id: build-image
         run: |
-	  IMAGE_TAG=latest 
-          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }} 
+          IMAGE_TAG=latest2
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY_BACKEND=survey_backend 
           ECR_REPOSITORY_FRONTEND=survey_frontend 
           ECR_REPOSITORY_ADMINER=adminer 
