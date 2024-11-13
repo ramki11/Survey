@@ -78,7 +78,7 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: survey_backend
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest"
 
       - name: Fill in the new image ID for survey_frontend
         id: task-def-frontend
