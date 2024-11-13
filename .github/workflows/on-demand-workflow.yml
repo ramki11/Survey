@@ -5,6 +5,8 @@ on:
 
 env:
   AWS_REGION: us-west-2
+  ECS_TASK_DEFINITION: survey-task-definition.json
+  ECS_CLUSTER: Survey
 
 jobs:
   build-and-deploy:
@@ -72,10 +74,10 @@ jobs:
 
       - name: Fill in the new image ID for survey_backend
         id: task-def-backend
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
-          task-definition: survey-task-definition.json
-          container-name: survey_backend
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: $ECR_REPOSITORY_BACKEND
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Fill in the new image ID for survey_frontend
