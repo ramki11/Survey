@@ -1,6 +1,9 @@
 {
-  "family": "survey",
+  "family": "survey-task-definition",
   "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
   "containerDefinitions": [
     {
       "name": "survey_backend",
@@ -9,13 +12,13 @@
       "portMappings": [
         {
           "containerPort": 8888,
-          "hostPort": 8888
+          "protocol": "tcp"
         }
       ],
       "environment": [
         {
-          "name": "DATABASE_URL",
-          "value": "postgresql://postgres:password@db:5432/app"
+          "name": "ENV_VARIABLE",
+          "value": "value"
         }
       ]
     },
@@ -26,105 +29,53 @@
       "portMappings": [
         {
           "containerPort": 3000,
-          "hostPort": 3000
+          "protocol": "tcp"
         }
       ]
     },
     {
       "name": "adminer",
-      "image": "survey/adminer:latest",
+      "image": "<ECR_REGISTRY>/adminer:latest",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 8080,
-          "hostPort": 8080
+          "protocol": "tcp"
         }
       ]
     },
     {
       "name": "mailcatcher",
-      "image": "survey/mailcatcher:latest",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/schickling/mailcatcher:latest",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 1025,
-          "hostPort": 1025
-        },
-        {
-          "containerPort": 1080,
-          "hostPort": 1080
+          "protocol": "tcp"
         }
       ]
     },
     {
       "name": "postgres",
-      "image": "survey/postgres:12",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/postgres:12",
       "essential": true,
-      "environment": [
+      "portMappings": [
         {
-          "name": "POSTGRES_USER",
-          "value": "postgres"
-        },
-        {
-          "name": "POSTGRES_PASSWORD",
-          "value": "password"
-        },
-        {
-          "name": "POSTGRES_DB",
-          "value": "app"
-        }
-      ],
-      "mountPoints": [
-        {
-          "sourceVolume": "postgres_data",
-          "containerPath": "/var/lib/postgresql/data"
+          "containerPort": 5432,
+          "protocol": "tcp"
         }
       ]
     },
     {
-      "name": "traefik",
-      "image": "survey/traefik:3.0",
+      "name": "proxy",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/traefik:3.0",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 80,
-          "hostPort": 80
-        },
-        {
-          "containerPort": 8080,
-          "hostPort": 8080
-        }
-      ],
-      "command": [
-        "--api.insecure=true",
-        "--providers.docker=true",
-        "--entrypoints.web.address=:80"
-      ],
-      "volumes": [
-        {
-          "name": "docker_sock",
-          "host": {
-            "sourcePath": "/var/run/docker.sock"
-          }
+          "protocol": "tcp"
         }
       ]
-    }
-  ],
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
-  "cpu": "512",
-  "memory": "1024",
-  "volumes": [
-    {
-      "name": "postgres_data",
-      "host": {}
-    },
-    {
-      "name": "docker_sock",
-      "host": {
-        "sourcePath": "/var/run/docker.sock"
-      }
     }
   ]
 }
