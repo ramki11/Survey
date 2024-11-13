@@ -43,13 +43,14 @@ jobs:
       - name: Build and push Docker images
         id: build-image
         run: |
-	  IMAGE_TAG=latest ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }} 
-          ECR_REPOSITORY_BACKEND=survey_backend:latest 
-          ECR_REPOSITORY_FRONTEND=survey_frontend:latest 
+	  IMAGE_TAG=latest 
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }} 
+          ECR_REPOSITORY_BACKEND=survey_backend 
+          ECR_REPOSITORY_FRONTEND=survey_frontend 
           ECR_REPOSITORY_ADMINER=adminer 
           ECR_REPOSITORY_MAILCATCHER=schickling/mailcatcher 
-          ECR_REPOSITORY_DB=postgres:12 
-          ECR_REPOSITORY_PROXY=traefik:3.0 
+          ECR_REPOSITORY_DB=postgres 
+          ECR_REPOSITORY_PROXY=traefik
           cp .env.example .env
           docker compose build
           docker compose down -v --remove-orphans
@@ -66,7 +67,6 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_MAILCATCHER:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY_PROXY:$IMAGE_TAG
-          
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
