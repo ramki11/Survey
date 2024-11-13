@@ -74,7 +74,7 @@ jobs:
 
       - name: Fill in the new image ID for survey_backend
         id: task-def-backend
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: survey_backend
@@ -84,46 +84,46 @@ jobs:
         id: task-def-frontend
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: survey_frontend
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend:latest"
 
       - name: Fill in the new image ID for adminer
         id: task-def-adminer
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: adminer
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/adminer:latest"
 
       - name: Fill in the new image ID for mailcatcher
         id: task-def-mailcatcher
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-adminer.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: mailcatcher
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/schickling/mailcatcher:latest"
 
       - name: Fill in the new image ID for postgres
         id: task-def-db
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-mailcatcher.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: postgres
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/postgres:12"
 
       - name: Fill in the new image ID for proxy
         id: task-def-proxy
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-db.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: proxy
-          image: ${{ steps.build-image.outputs.image }}
+          image: "913524926070.dkr.ecr.us-west-2.amazonaws.com/traefik:3.0"
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-proxy.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           service: survey
           cluster: Survey
           wait-for-service-stability: true
