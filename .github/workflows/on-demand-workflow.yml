@@ -93,3 +93,60 @@ jobs:
           service: survey
           cluster: Survey
           wait-for-service-stability: true
+
+      # Render and update task definition for each container individually
+      - name: Fill in the new image ID for survey_backend
+        id: task-def-backend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+        	task-definition: survey-task-definition.json
+        	container-name: survey_backend
+        	image: ${{ steps.build-image.outputs.image }}
+         
+      - name: Fill in the new image ID for survey_frontend
+  	    id: task-def-frontend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
+          container-name: survey_frontend
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Fill in the new image ID for adminer
+	      id: task-def-adminer
+	      uses: aws-actions/amazon-ecs-render-task-definition@v1
+	      with:
+	         task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
+	         container-name: adminer
+	         image: ${{ steps.build-image.outputs.image }}
+
+      - name: Fill in the new image ID for mailcatcher
+        id: task-def-mailcatcher
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-adminer.outputs.task-definition }}
+          container-name: mailcatcher
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Fill in the new image ID for postgres
+        id: task-def-db
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-mailcatcher.outputs.task-definition }}
+          container-name: postgres
+          image: ${{ steps.build-image.outputs.image }}                         
+
+      - name: Fill in the new image ID for proxy
+        id: task-def-proxy
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-db.outputs.task-definition }}
+          container-name: proxy
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-proxy.outputs.task-definition }}
+          service: survey
+          cluster: Survey
+          wait-for-service-stability: true
