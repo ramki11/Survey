@@ -30,3 +30,21 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   protocol  = "email"
   endpoint  = "ramki.ratnakara@gmail.com.com" # Replace with your email address
 }
+
+
+module "ecs" {
+  source = "terraform-aws-modules/ecs/aws"
+
+  name = "ram"
+
+  container_insights = true
+
+  capacity_providers = ["FARGATE"]
+
+  default_capacity_provider_strategy = [
+    {
+      capacity_provider = "FARGATE"
+      weight            = 1
+    }
+  ]
+}
