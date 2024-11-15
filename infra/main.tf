@@ -28,7 +28,7 @@ resource "aws_sns_topic" "billing_alert_topic" {
 resource "aws_sns_topic_subscription" "email_subscription" {
   topic_arn = aws_sns_topic.billing_alert_topic.arn
   protocol  = "email"
-  endpoint  = "ramki.ratnakara@gmail.com.com" # Replace with your email address
+  endpoint  = "ramki.ratnakara@gmail.com" # Replace with your email address
 }
 
 
