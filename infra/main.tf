@@ -32,19 +32,6 @@ resource "aws_sns_topic_subscription" "email_subscription" {
 }
 
 
-module "ecs" {
-  source = "terraform-aws-modules/ecs/aws"
-
-  name = "ram"
-
-  container_insights = true
-
-  capacity_providers = ["FARGATE"]
-
-  default_capacity_provider_strategy = [
-    {
-      capacity_provider = "FARGATE"
-      weight            = 1
-    }
-  ]
+output "ecr_repository_name" {
+  value = aws_ecr_repository.instance.name
 }
