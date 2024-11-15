@@ -30,8 +30,3 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   protocol  = "email"
   endpoint  = "ramki.ratnakara@gmail.com" # Replace with your email address
 }
-
-
-output "ecr_repository_name" {
-  value = aws_ecr_repository.instance.name
-}
