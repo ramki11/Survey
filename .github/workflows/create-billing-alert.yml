@@ -22,13 +22,19 @@ jobs:
         with:
           terraform_version: 1.5.0 # Replace with your desired version
 
+      - name: Change to Terraform directory
+        run: cd Survey/infra
+
       - name: Initialize Terraform
+        working-directory: Survey/infra
         run: terraform init
 
       - name: Validate Terraform configuration
+        working-directory: Survey/infra
         run: terraform validate
 
       - name: Apply Terraform configuration
+        working-directory: Survey/infra
         env:
           TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
