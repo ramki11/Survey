@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "billing_alarm" {
   namespace                 = "AWS/Billing"
   period                    = "21600" # 6 hours
   statistic                 = "Maximum"
-  threshold                 = "100.0" # Replace with your billing threshold
+  threshold                 = "1.0" # Replace with your billing threshold
   alarm_description         = "Alarm when estimated charges exceed threshold"
   dimensions = {
     Currency = "USD"
