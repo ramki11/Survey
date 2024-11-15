@@ -1,17 +1,57 @@
-name: Run on Demand
-
+name: Build and Deploy Docker Images to AWS ECR
 on:
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
+env:
+  AWS_REGION: us-west-2
+  ECS_CLUSTER: Survey
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Deploy to ECS Fargate
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Docker Compose
         run: |
-          echo "Running deployment workflow on demand"
-          # Insert deployment commands here, e.g., docker build and deploy to ECS
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+          
+      - name: Build and push Docker images
+        id: build-image
+        run: |
+          IMAGE_TAG=latest
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY_BACKEND=survey_backend 
+          ECR_REPOSITORY_FRONTEND=survey_frontend 
+          cp .env.example .env
+          docker compose build
+          docker compose down -v --remove-orphans
+          docker compose up -d 
+          docker tag survey_backend:latest $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
+          docker tag survey_frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG  
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG 
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG 
