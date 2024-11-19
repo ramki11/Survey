@@ -7,3 +7,12 @@ data "aws_ecr_repository" "instance" {
 }
 
 
+resource "aws_ecs_cluster" "cluster" {
+  name               = "survey-sandbox"
+  capacity_providers = ["FARGATE"]
+
+  default_capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = "100"
+  }
+}
