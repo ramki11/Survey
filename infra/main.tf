@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-west-2" # Replace with your AWS region
-}
 
 resource "aws_cloudwatch_metric_alarm" "billing_alarm" {
   alarm_name                = "BillingAlarm"
