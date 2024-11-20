@@ -8,7 +8,6 @@ module "vpc" {
   region                        = var.region
   project_name                  = var.project_name
   vpc_data                      = var.vpc_data
-  ecs_service_security_group_id = module.ecs.ecs_service_security_group_id
 }
 
 # create nat gateway
