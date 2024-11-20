@@ -9,8 +9,8 @@ module "ecs" {
   source                          = "./modules/ecs"
   region                          = var.region
   project_name                    = var.project_name
-  app_name                        = var.app_name
-  private_app_subnets             = module.vpc.private_app_subnets
+  app_name                        = "backend-1"
+  private_app_subnets             = module.vpc.public_app_subnets
   vpc_id                          = module.vpc.vpc_id
   load_balancer_security_group_id = module.alb.alb_security_group_id
   target_group_arn                = module.alb.target_group_arn
