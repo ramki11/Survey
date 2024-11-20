@@ -77,7 +77,7 @@ resource "aws_alb_listener" "https" {
 }
 
 resource "aws_lb_target_group" "this" {
-  name        = "${var.project_name}-sample-app-tg"
+  name        = "${var.project_name}-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
@@ -99,7 +99,7 @@ resource "aws_lb_target_group" "this" {
   ]
 
   tags = {
-    Name = "${var.project_name}-sample-app-lb-tg"
+    Name = "${var.project_name}-lb-tg"
   }
 }
 
