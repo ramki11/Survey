@@ -47,4 +47,4 @@ resource "aws_route_table_association" "private_app_subnets" {
   route_table_id = aws_route_table.private[each.key].id
   subnet_id      = var.private_app_subnets[each.key].id
 }
-}
+
