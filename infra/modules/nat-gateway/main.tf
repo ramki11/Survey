@@ -47,11 +47,4 @@ resource "aws_route_table_association" "private_app_subnets" {
   route_table_id = aws_route_table.private[each.key].id
   subnet_id      = var.private_app_subnets[each.key].id
 }
-
-# associate private db subnets with private route tables
-resource "aws_route_table_association" "private_db_subnets" {
-  for_each = toset(local.availability_zones)
-
-  route_table_id = aws_route_table.private[each.key].id
-  subnet_id      = var.private_db_subnets[each.key].id
 }
