@@ -83,36 +83,3 @@ resource "aws_route_table_association" "public_subnets" {
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public[each.key].id
 }
-
-module "endpoints" {
-  source             = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  vpc_id             = aws_vpc.this.id
-  security_group_ids = [var.ecs_service_security_group_id]
-
-  endpoints = {
-    ecr-dkr = {
-      service            = "ecr.dkr"
-      security_group_ids = [var.ecs_service_security_group_id]
-      subnet_ids         = [for subnet in aws_subnet.private_app : subnet.id]
-      tags               = { Name = "ecr.dkr-vpc-endpoint" }
-    },
-    ecr-api = {
-      service            = "ecr.api"
-      security_group_ids = [var.ecs_service_security_group_id]
-      subnet_ids         = [for subnet in aws_subnet.private_app : subnet.id]
-      tags               = { Name = "ecr.api-vpc-endpoint" }
-    },
-    ecs-agent = {
-      service            = "ecs-agent"
-      security_group_ids = [var.ecs_service_security_group_id]
-      subnet_ids         = [for subnet in aws_subnet.private_app : subnet.id]
-      tags               = { Name = "ecs-agent-vpc-endpoint" }
-    },
-    ecs-telemetry = {
-      service            = "ecs-telemetry"
-      security_group_ids = [var.ecs_service_security_group_id]
-      subnet_ids         = [for subnet in aws_subnet.private_app : subnet.id]
-      tags               = { Name = "ecs-telemetry-vpc-endpoint" }
-    }
-  }
-}
