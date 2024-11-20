@@ -18,7 +18,6 @@ module "nat_gateway" {
   vpc_data            = var.vpc_data
   public_subnets      = module.vpc.public_subnets
   private_app_subnets = module.vpc.private_app_subnets
-  private_db_subnets  = module.vpc.private_db_subnets
 }
 
 # create iam role
