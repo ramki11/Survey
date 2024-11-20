@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode(
     [
       {
-        "name" : "${var.project_name}-sample-app-container",
+        "name" : "${var.project_name}-container",
         "image" : "${var.image_path}:${var.image_tag}",
         "entryPoint" : [],
         "essential" : true,
@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "this" {
           "options" : {
             "awslogs-group" : "${aws_cloudwatch_log_group.this.id}",
             "awslogs-region" : "${var.region}",
-            "awslogs-stream-prefix" : "${var.project_name}-sample-app"
+            "awslogs-stream-prefix" : "${var.project_name}"
           }
         },
         "portMappings" : [
@@ -70,7 +70,7 @@ data "aws_ecs_task_definition" "main" {
 }
 
 resource "aws_ecs_service" "this" {
-  name                 = "${var.project_name}-sample-app-ecs-service"
+  name                 = "${var.project_name}-ecs-service"
   cluster              = aws_ecs_cluster.this.id
   task_definition      = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.main.revision)}"
   scheduling_strategy  = "REPLICA"
@@ -87,7 +87,7 @@ resource "aws_ecs_service" "this" {
 
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name   = "${var.project_name}-sample-app-container"
+    container_name   = "${var.project_name}-container"
     container_port   = 3000
   }
 
