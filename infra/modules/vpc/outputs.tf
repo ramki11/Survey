@@ -20,8 +20,3 @@ output "private_app_subnets" {
   value       = aws_subnet.private_app
   description = "Private app subnets created by this module"
 }
-
-output "private_db_subnets" {
-  value       = aws_subnet.private_db
-  description = "Private db subnets created by this module"
-}
