@@ -47,22 +47,7 @@ resource "aws_subnet" "private_app" {
   }
 }
 
-# create private db subnets
-resource "aws_subnet" "private_db" {
-  for_each = {
-    for az in var.vpc_data.availability_zones :
-    az.az_name => az
-  }
 
-  vpc_id                  = aws_vpc.this.id
-  cidr_block              = each.value.private_db_subnet_cidr
-  availability_zone       = each.value.az_name
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "private-db-subnet-${each.value.az_name}"
-  }
-}
 
 # create internet gateway and attach it to vpc
 resource "aws_internet_gateway" "this" {
