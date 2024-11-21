@@ -1,24 +1,9 @@
 import { expect, test } from "@playwright/test"
-import { firstSuperuserToken } from "../config.ts"
 import PageManager from "../page-objects/pageManager"
 
 test.describe("Inquiry Management Suite", () => {
-  test.beforeEach(async ({ context, page }) => {
-    await context.addCookies([
-      {
-        name: "access_token",
-        value: firstSuperuserToken,
-        domain: "localhost",
-        path: "/",
-      },
-      {
-        name: "access_token_expiry",
-        value: `${Math.floor(new Date().getTime() / 1000) + 60 * 60 * 1}`,
-        domain: "localhost",
-        path: "/",
-      },
-    ])
-    await page.goto("http://localhost:5173/")
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/")
   })
 
   test.afterEach(async ({ page }) => {
@@ -29,7 +14,6 @@ test.describe("Inquiry Management Suite", () => {
     page,
   }) => {
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
@@ -43,7 +27,6 @@ test.describe("Inquiry Management Suite", () => {
     page,
   }) => {
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
@@ -61,7 +44,6 @@ test.describe("Inquiry Management Suite", () => {
     const inputText =
       "In a world where technology is advancing at an exponential rate, it's important to remember the value of human connection, empathy, and kindness. As we move forward, let's not forget the importance of collaboration creativity and the pursuit of happiness in world."
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
@@ -77,7 +59,6 @@ test.describe("Inquiry Management Suite", () => {
   }) => {
     const inputText = "whats up?"
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
@@ -90,7 +71,6 @@ test.describe("Inquiry Management Suite", () => {
 
   test("TC_005 Verify the behavior of Cancel button", async ({ page }) => {
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
@@ -103,7 +83,6 @@ test.describe("Inquiry Management Suite", () => {
     page,
   }) => {
     const pm = new PageManager(page)
-    await pm.oninquiryPage()
     await pm.oninquiryPage().navigateToInquiriesPage()
     await pm.oninquiryPage().openInquiryForm()
 
