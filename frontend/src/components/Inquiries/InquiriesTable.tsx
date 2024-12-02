@@ -1,39 +1,67 @@
-import { Box, Flex, Spinner } from "@chakra-ui/react"
-import { useMemo } from "react"
-import type { InquiryPublic } from "../../client/models.ts"
+import { Box } from "@chakra-ui/react"
+import { useEffect, useState } from "react"
+import { ScheduleService } from "../../client"
+import type { InquiryPublic, SchedulePublic, ThemePublic } from "../../client"
 import { useInquiries } from "../../hooks/useInquiries.ts"
 import { DataTable } from "../Common/Table.tsx"
 import { columns } from "./InquiriesTable.columns.tsx"
+type InquiriesTableProps = {
+  themes: ThemePublic[]
+}
 
-const InquiriesTable = () => {
-  const { data: inquiries, isLoading } = useInquiries()
+const InquiriesTable = ({ themes }: InquiriesTableProps) => {
+  const [schedule, setSchedule] = useState<SchedulePublic | null>(null)
+  useEffect(() => {
+    async function startGetSchedule() {
+      setSchedule(null)
+      const s = await ScheduleService.getSchedule()
+      if (!ignore) {
+        setSchedule(s)
+      }
+    }
+    let ignore = false
+    void startGetSchedule()
+    return () => {
+      ignore = true
+    }
+  }, [])
 
-  // Sort inquiries from Newest to oldest
-  const sortedInquiries = useMemo(() => {
-    if (!inquiries?.data) return []
-    return inquiries.data.sort((a: InquiryPublic, b: InquiryPublic) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
-  }, [inquiries])
+  const { data: inquiries } = useInquiries()
+
+  const [sortedInquiries, setSortedInquiries] = useState<InquiryPublic[]>([])
+  useEffect(() => {
+    setSortedInquiries([])
+    if (inquiries?.data) {
+      inquiries?.data.sort((a: InquiryPublic, b: InquiryPublic) => {
+        return (
+          (schedule?.scheduled_inquiries?.indexOf(a.id) ?? -1) -
+          (schedule?.scheduled_inquiries?.indexOf(b.id) ?? -1)
+        )
+      })
+      setSortedInquiries([...inquiries.data])
+    }
+  }, [schedule, inquiries?.data])
 
   const handleRowClick = (inquiry: InquiryPublic) => {
     console.log("Row clicked:", inquiry)
   }
 
   return (
-    <Box>
-      {isLoading ? (
-        <Flex align="center" justify="center" height={200}>
-          <Spinner size="xl" />
-        </Flex>
-      ) : (
+    <>
+      <Box>
         <DataTable
           data={sortedInquiries}
-          columns={columns}
+          columns={columns(
+            themes,
+            sortedInquiries ?? [],
+            setSortedInquiries,
+            schedule,
+            setSchedule,
+          )}
           onRowClick={handleRowClick}
         />
-      )}
-    </Box>
+      </Box>
+    </>
   )
 }
 

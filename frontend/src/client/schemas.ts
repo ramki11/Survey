@@ -1,45 +1,3 @@
-export const $Body_login_login_access_token = {
-	properties: {
-		grant_type: {
-	type: 'any-of',
-	contains: [{
-	type: 'string',
-	pattern: 'password',
-}, {
-	type: 'null',
-}],
-},
-		username: {
-	type: 'string',
-	isRequired: true,
-},
-		password: {
-	type: 'string',
-	isRequired: true,
-},
-		scope: {
-	type: 'string',
-	default: '',
-},
-		client_id: {
-	type: 'any-of',
-	contains: [{
-	type: 'string',
-}, {
-	type: 'null',
-}],
-},
-		client_secret: {
-	type: 'any-of',
-	contains: [{
-	type: 'string',
-}, {
-	type: 'null',
-}],
-},
-	},
-} as const;
-
 export const $HTTPValidationError = {
 	properties: {
 		detail: {
@@ -59,6 +17,59 @@ export const $InquiryCreate = {
 	maxLength: 256,
 	minLength: 10,
 },
+		theme_id: {
+	type: 'any-of',
+	contains: [{
+	type: 'number',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		first_scheduled: {
+	type: 'any-of',
+	contains: [{
+	type: 'string',
+	format: 'date-time',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+	},
+} as const;
+
+export const $InquiryDelete = {
+	properties: {
+		text: {
+	type: 'string',
+	isRequired: true,
+	maxLength: 256,
+	minLength: 10,
+},
+		theme_id: {
+	type: 'any-of',
+	contains: [{
+	type: 'number',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		first_scheduled: {
+	type: 'any-of',
+	contains: [{
+	type: 'string',
+	format: 'date-time',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		id: {
+	type: 'number',
+	isRequired: true,
+},
 	},
 } as const;
 
@@ -66,6 +77,25 @@ export const $InquiryPublic = {
 	properties: {
 		text: {
 	type: 'string',
+	isRequired: true,
+},
+		theme_id: {
+	type: 'any-of',
+	contains: [{
+	type: 'number',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		first_scheduled: {
+	type: 'any-of',
+	contains: [{
+	type: 'string',
+	format: 'date-time',
+}, {
+	type: 'null',
+}],
 	isRequired: true,
 },
 		id: {
@@ -76,6 +106,48 @@ export const $InquiryPublic = {
 	type: 'string',
 	isRequired: true,
 	format: 'date-time',
+},
+		theme: {
+	type: 'any-of',
+	contains: [{
+	type: 'ThemePublic',
+}, {
+	type: 'null',
+}],
+},
+	},
+} as const;
+
+export const $InquiryUpdate = {
+	properties: {
+		text: {
+	type: 'string',
+	isRequired: true,
+	maxLength: 256,
+	minLength: 10,
+},
+		theme_id: {
+	type: 'any-of',
+	contains: [{
+	type: 'number',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		first_scheduled: {
+	type: 'any-of',
+	contains: [{
+	type: 'string',
+	format: 'date-time',
+}, {
+	type: 'null',
+}],
+	isRequired: true,
+},
+		id: {
+	type: 'number',
+	isRequired: true,
 },
 	},
 } as const;
@@ -161,69 +233,11 @@ export const $SchedulePublic = {
 	type: 'number',
 	isRequired: true,
 },
-	},
-} as const;
-
-export const $ScheduledInquiriesPublic = {
-	properties: {
-		data: {
+		scheduled_inquiries: {
 	type: 'array',
 	contains: {
-		type: 'ScheduledInquiryPublicWithInquiryText',
-	},
-	isRequired: true,
-},
-		count: {
 	type: 'number',
-	isRequired: true,
 },
-	},
-} as const;
-
-export const $ScheduledInquiryCreate = {
-	properties: {
-		inquiry_id: {
-	type: 'number',
-	isRequired: true,
-},
-	},
-} as const;
-
-export const $ScheduledInquiryPublic = {
-	properties: {
-		inquiry_id: {
-	type: 'number',
-	isRequired: true,
-},
-		rank: {
-	type: 'number',
-	isRequired: true,
-	minimum: 1,
-},
-		id: {
-	type: 'number',
-	isRequired: true,
-},
-	},
-} as const;
-
-export const $ScheduledInquiryPublicWithInquiryText = {
-	properties: {
-		inquiry_id: {
-	type: 'number',
-	isRequired: true,
-},
-		rank: {
-	type: 'number',
-	isRequired: true,
-	minimum: 1,
-},
-		id: {
-	type: 'number',
-	isRequired: true,
-},
-		text: {
-	type: 'string',
 	isRequired: true,
 },
 	},
@@ -285,19 +299,6 @@ export const $ThemesPublic = {
 		count: {
 	type: 'number',
 	isRequired: true,
-},
-	},
-} as const;
-
-export const $Token = {
-	properties: {
-		access_token: {
-	type: 'string',
-	isRequired: true,
-},
-		token_type: {
-	type: 'string',
-	default: 'bearer',
 },
 	},
 } as const;

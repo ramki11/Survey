@@ -2,12 +2,27 @@ import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
 
-import type { UserPublic,InquiryCreate,InquiryPublic,InquriesPublic,ThemeCreate,ThemePublic,ThemesPublic,Message,UserCreate,UsersPublic,ScheduledInquiriesPublic,ScheduledInquiryCreate,ScheduledInquiryPublic,ScheduleCreate,SchedulePublic } from './models';
+import type { InquiryCreate,InquiryDelete,InquiryPublic,InquiryUpdate,InquriesPublic,ThemeCreate,ThemePublic,ThemesPublic,Message,UserCreate,UserPublic,UsersPublic,ScheduleCreate,SchedulePublic } from './models';
 
+export type AuthData = {
+        AuthCallback: {
+                    code: string
+state: string
+                    
+                };
+    }
 
 export type InquiriesData = {
         CreateInquiry: {
                     requestBody: InquiryCreate
+                    
+                };
+UpdateInquiry: {
+                    requestBody: InquiryUpdate
+                    
+                };
+DeleteInquiry: {
+                    requestBody: InquiryDelete
                     
                 };
 GetInquries: {
@@ -64,26 +79,66 @@ export type UtilsData = {
                 };
     }
 
-export type ScheduledInquiriesData = {
-        AddToSchedule: {
-                    requestBody: ScheduledInquiryCreate
-                    
-                };
-GetScheduledInquries: {
-                    limit?: number
-skip?: number
-                    
-                };
-    }
-
 export type ScheduleData = {
         CreateSchedule: {
                     requestBody: ScheduleCreate
                     
                 };
+UpdateScheduledInquiries: {
+                    requestBody: Array<number>
+                    
+                };
     }
 
+export class AuthService {
 
+	/**
+	 * Login
+	 * @returns unknown Successful Response
+	 * @throws ApiError
+	 */
+	public static login(): CancelablePromise<unknown> {
+				return __request(OpenAPI, {
+			method: 'GET',
+			url: '/api/v1/auth/login',
+		});
+	}
+
+	/**
+	 * Auth Callback
+	 * @returns unknown Successful Response
+	 * @throws ApiError
+	 */
+	public static authCallback(data: AuthData['AuthCallback']): CancelablePromise<unknown> {
+		const {
+code,
+state,
+} = data;
+		return __request(OpenAPI, {
+			method: 'GET',
+			url: '/api/v1/auth/callback',
+			query: {
+				code, state
+			},
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+
+	/**
+	 * Refresh
+	 * @returns unknown Successful Response
+	 * @throws ApiError
+	 */
+	public static refresh(): CancelablePromise<unknown> {
+				return __request(OpenAPI, {
+			method: 'POST',
+			url: '/api/v1/auth/refresh',
+		});
+	}
+
+}
 
 export class InquiriesService {
 
@@ -99,6 +154,48 @@ requestBody,
 } = data;
 		return __request(OpenAPI, {
 			method: 'POST',
+			url: '/api/v1/inquiries/',
+			body: requestBody,
+			mediaType: 'application/json',
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+
+	/**
+	 * Update Inquiry
+	 * Update inquiry.
+	 * @returns InquiryPublic Successful Response
+	 * @throws ApiError
+	 */
+	public static updateInquiry(data: InquiriesData['UpdateInquiry']): CancelablePromise<InquiryPublic> {
+		const {
+requestBody,
+} = data;
+		return __request(OpenAPI, {
+			method: 'PATCH',
+			url: '/api/v1/inquiries/',
+			body: requestBody,
+			mediaType: 'application/json',
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+
+	/**
+	 * Delete Inquiry
+	 * Delete inquiry.
+	 * @returns InquiryDelete Successful Response
+	 * @throws ApiError
+	 */
+	public static deleteInquiry(data: InquiriesData['DeleteInquiry']): CancelablePromise<InquiryDelete> {
+		const {
+requestBody,
+} = data;
+		return __request(OpenAPI, {
+			method: 'DELETE',
 			url: '/api/v1/inquiries/',
 			body: requestBody,
 			mediaType: 'application/json',
@@ -285,6 +382,19 @@ requestBody,
 	}
 
 	/**
+	 * Delete User Me
+	 * Delete own user.
+	 * @returns Message Successful Response
+	 * @throws ApiError
+	 */
+	public static deleteUserMe(): CancelablePromise<Message> {
+				return __request(OpenAPI, {
+			method: 'DELETE',
+			url: '/api/v1/users/me',
+		});
+	}
+
+	/**
 	 * Read User By Id
 	 * Get a specific user by id.
 	 * @returns UserPublic Successful Response
@@ -356,52 +466,6 @@ emailTo,
 
 }
 
-export class ScheduledInquiriesService {
-
-	/**
-	 * Add To Schedule
-	 * @returns ScheduledInquiryPublic Successful Response
-	 * @throws ApiError
-	 */
-	public static addToSchedule(data: ScheduledInquiriesData['AddToSchedule']): CancelablePromise<ScheduledInquiryPublic> {
-		const {
-requestBody,
-} = data;
-		return __request(OpenAPI, {
-			method: 'POST',
-			url: '/api/v1/scheduledinquiries/',
-			body: requestBody,
-			mediaType: 'application/json',
-			errors: {
-				422: `Validation Error`,
-			},
-		});
-	}
-
-	/**
-	 * Get Scheduled Inquries
-	 * @returns ScheduledInquiriesPublic Successful Response
-	 * @throws ApiError
-	 */
-	public static getScheduledInquries(data: ScheduledInquiriesData['GetScheduledInquries'] = {}): CancelablePromise<ScheduledInquiriesPublic> {
-		const {
-skip = 0,
-limit = 100,
-} = data;
-		return __request(OpenAPI, {
-			method: 'GET',
-			url: '/api/v1/scheduledinquiries/',
-			query: {
-				skip, limit
-			},
-			errors: {
-				422: `Validation Error`,
-			},
-		});
-	}
-
-}
-
 export class ScheduleService {
 
 	/**
@@ -428,6 +492,26 @@ requestBody,
 		return __request(OpenAPI, {
 			method: 'POST',
 			url: '/api/v1/schedule/',
+			body: requestBody,
+			mediaType: 'application/json',
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+
+	/**
+	 * Update Scheduled Inquiries
+	 * @returns SchedulePublic Successful Response
+	 * @throws ApiError
+	 */
+	public static updateScheduledInquiries(data: ScheduleData['UpdateScheduledInquiries']): CancelablePromise<SchedulePublic> {
+		const {
+requestBody,
+} = data;
+		return __request(OpenAPI, {
+			method: 'PATCH',
+			url: '/api/v1/schedule/update_scheduled_inquiries',
 			body: requestBody,
 			mediaType: 'application/json',
 			errors: {
