@@ -1,10 +1,10 @@
-name: Create AWS Core Infra
+name: Create AWS Billing Alert
 
 on:
   workflow_dispatch:
 
 jobs:
-  aws-core-infra:
+  create-billing-alert:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
