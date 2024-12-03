@@ -1,0 +1,122 @@
+{
+  "family": "survey-task-definition",
+  "taskRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 4,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "containerDefinitions": [
+    {
+      "name": "survey_backend",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8888,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "ENV_VARIABLE",
+          "value": "value"
+        }
+      ]
+    },
+    {
+      "name": "survey_frontend",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "adminer",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/adminer:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "mailcatcher",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/schickling/mailcatcher:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 1025,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "postgres",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/postgres:12",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 5432,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "proxy",
+      "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/traefik:3.0",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ]
+}
