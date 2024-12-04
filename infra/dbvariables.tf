@@ -1,11 +1,11 @@
 variable "project" {
-  default     = "Unknown"
+  default     = "RAMSURVEY"
   type        = string
   description = "Name of project this VPC is meant to house"
 }
 
 variable "environment" {
-  default     = "Unknown"
+  default     = "AWS"
   type        = string
   description = "Name of environment this VPC is targeting"
 }
