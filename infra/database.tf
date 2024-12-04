@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
 #
 resource "aws_security_group" "postgresql" {
   ##vpc_id = var.vpc_id
-  vpc_id = "  default = "vpc-016ace159ae472ee3""
+  vpc_id = "vpc-016ace159ae472ee3"
 
   tags = merge(
     {
