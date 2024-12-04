@@ -28,7 +28,8 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
 # Security group resources
 #
 resource "aws_security_group" "postgresql" {
-  vpc_id = var.vpc_id
+  ##vpc_id = var.vpc_id
+  vpc_id = "  default = "vpc-016ace159ae472ee3""
 
   tags = merge(
     {
@@ -65,7 +66,8 @@ resource "aws_db_instance" "postgresql" {
   multi_az                        = var.multi_availability_zone
   port                            = var.database_port
   vpc_security_group_ids          = [aws_security_group.postgresql.id]
-  db_subnet_group_name            = var.subnet_group
+  #db_subnet_group_name            = var.subnet_group
+  db_subnet_group_name            = "subnet-0a2ff29f2c3c05269"
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
   monitoring_interval             = var.monitoring_interval
