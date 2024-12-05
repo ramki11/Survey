@@ -197,13 +197,11 @@ variable "alarm_cpu_credit_balance_threshold" {
 variable "alarm_actions" {
   type        = list
   description = "List of ARNs to be notified via CloudWatch when alarm enters ALARM state"
-  default = "arn:aws:sns:us-west-2:913524926070:BillingAlertTopic"
 }
 
 variable "ok_actions" {
   type        = list
   description = "List of ARNs to be notified via CloudWatch when alarm enters OK state"
-  default = "arn:aws:sns:us-west-2:913524926070:BillingAlertTopic"
 }
 
 variable "insufficient_data_actions" {
