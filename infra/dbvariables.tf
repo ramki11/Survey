@@ -1,3 +1,4 @@
+/*
 variable "project" {
   default     = "RAMSURVEY"
   type        = string
@@ -218,3 +219,5 @@ variable "tags" {
   type        = map(string)
   description = "Extra tags to attach to the RDS resources"
 }
+
+*/
