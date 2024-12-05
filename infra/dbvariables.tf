@@ -40,10 +40,10 @@ variable "iops" {
   description = "The amount of provisioned IOPS"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "ID of VPC meant to house database"
-}
+#variable "vpc_id" {
+ # type        = string
+ # description = "ID of VPC meant to house database"
+# }
 
 variable "database_identifier" {
   default     = "ram-survey"
@@ -155,10 +155,10 @@ variable "cloudwatch_logs_exports" {
   description = "List of logs to publish to CloudWatch Logs"
 }
 
-variable "subnet_group" {
-  type        = string
-  description = "Database subnet group"
-}
+#variable "subnet_group" {
+#  type        = string
+#  description = "Database subnet group"
+#}
 
 variable "parameter_group" {
   default     = "default.postgres11"
