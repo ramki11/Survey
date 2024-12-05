@@ -46,27 +46,31 @@ variable "vpc_id" {
 }
 
 variable "database_identifier" {
+  default     = "ram-survey"
   type        = string
   description = "Identifier for RDS instance"
 }
 
 variable "snapshot_identifier" {
-  default     = ""
+  default     = "ram-survey"
   type        = string
   description = "The name of the snapshot (if any) the database should be created from"
 }
 
 variable "database_name" {
+  default     = "ram-survey"
   type        = string
   description = "Name of database inside storage engine"
 }
 
 variable "database_username" {
+  default     = "ram-survey-user"
   type        = string
   description = "Name of user inside storage engine"
 }
 
 variable "database_password" {
+  default     = "ram-survey-pwd"
   type        = string
   description = "Database password inside storage engine"
 }
