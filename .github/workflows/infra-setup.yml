@@ -2,7 +2,9 @@ name: Create AWS Core Infra
 
 on:
   workflow_dispatch:
-
+env:
+  ACTIONS_STEP_DEBUG: true
+  
 jobs:
   aws-core-infra:
     runs-on: ubuntu-latest
