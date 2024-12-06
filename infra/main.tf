@@ -66,7 +66,8 @@ module "alb" {
   vpc_id              = module.vpc.vpc_id
   project_name        = var.project_name
   app_name            = var.app_name
-  acm_certificate_arn = module.acm.acm_certificate_arn
+  acm_certificate_arn = "arn:aws:acm:us-west-2:913524926070:certificate/473bf415-eb13-46a0-9f37-73c4959f3c89"
+###module.acm.acm_certificate_arn
 }
 
 # Create ecs cluster, service and task definition
