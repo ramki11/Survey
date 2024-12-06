@@ -46,7 +46,7 @@ module "acm" {
 
   domain_name         = "*.${local.app_hosted_zone_domain}"
   zone_id             = module.route53.hosted_zone_zone_id
-  wait_for_validation = true
+  wait_for_validation = false
 
   tags = {
     Name = "${local.sample_app_domain}"
