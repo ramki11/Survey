@@ -45,7 +45,7 @@ variable "vpc_data" {
 variable "root_domain" {
   description = "Root domain for the application"
   type        = string
-  default     = "survey.com"
+  default     = "surveystage"
 }
 
 variable "app_subdomain" {
