@@ -64,7 +64,7 @@ default_action {
     #}
   # }
 }
-/*
+
 resource "aws_alb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "443"
@@ -80,7 +80,7 @@ resource "aws_alb_listener" "https" {
     }
   }
 }
-*/
+
 resource "aws_lb_target_group" "this" {
   name        = "${var.project_name}-sample-app-tg"
   port        = 80
