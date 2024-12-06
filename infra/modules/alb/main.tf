@@ -11,6 +11,13 @@ resource "aws_security_group" "load_balancer" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  ingress {
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
   egress {
     from_port        = 0
@@ -53,9 +60,24 @@ resource "aws_alb_listener" "http" {
   }
 }
 
+resource "aws_alb_listener" "https" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  certificate_arn   = var.acm_certificate_arn
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "okay"
+      status_code  = "200"
+    }
+  }
+}
 
 resource "aws_lb_target_group" "this" {
-  name        = "${var.project_name}-tg"
+  name        = "${var.project_name}-sample-app-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
@@ -77,7 +99,7 @@ resource "aws_lb_target_group" "this" {
   ]
 
   tags = {
-    Name = "${var.project_name}-lb-tg"
+    Name = "${var.project_name}-sample-app-lb-tg"
   }
 }
 
