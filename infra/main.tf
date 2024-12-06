@@ -1,3 +1,8 @@
+locals {
+  app_hosted_zone_domain = "${var.app_hosted_zone_name}.${var.root_domain}"
+  sample_app_domain      = "${var.app_subdomain}.${local.app_hosted_zone_domain}"
+}
+
 data "aws_caller_identity" "current" {}
 
 
