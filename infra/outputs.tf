@@ -1,3 +1,4 @@
+/*
 output "id" {
   value       = aws_db_instance.postgresql.id
   description = "The database instance ID"
@@ -27,3 +28,4 @@ output "endpoint" {
   value       = aws_db_instance.postgresql.endpoint
   description = "Public DNS name and port separated by a colon"
 }
+*/
