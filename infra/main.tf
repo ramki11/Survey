@@ -24,6 +24,35 @@ module "iam" {
   source = "./modules/iam"
 }
 
+module "route53" {
+  source                     = "./modules/route53"
+  root_domain                = var.root_domain
+  hosted_zone_domain         = local.app_hosted_zone_domain
+  hosted_zone_name           = var.app_hosted_zone_name
+  subdomain                  = var.app_subdomain
+  a_record_alias_domain_name = module.alb.alb_dns_name
+  a_record_alias_zone_id     = module.alb.alb_zone_id
+}
+
+# Create acm certificate
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 4.0"
+
+  domain_name         = "*.${local.app_hosted_zone_domain}"
+  zone_id             = module.route53.hosted_zone_zone_id
+  wait_for_validation = true
+
+  tags = {
+    Name = "${local.sample_app_domain}"
+  }
+
+  depends_on = [
+    module.route53.hosted_zone
+  ]
+}
+
+
 
 # Create application load balancer
 module "alb" {
