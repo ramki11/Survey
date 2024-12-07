@@ -18,7 +18,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 
 resource "aws_ecs_task_definition" "this" {
   family = "${var.project_name}-${var.app_name}-ecs-task_definition"
-  container_definitions    = file("./modules/ecs/backend-survey-task-definition.json")
+  container_definitions    = file("./modules/ecs/${var.project_name}-${var.app_name}-task-definition.json")
   task_role_arn            = var.ecs_task_execution_role_arn
   execution_role_arn       = var.ecs_task_execution_role_arn
 
