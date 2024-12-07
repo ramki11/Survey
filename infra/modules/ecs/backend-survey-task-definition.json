@@ -1,80 +1,37 @@
-{
-    "containerDefinitions": [
-        {
-            "name": "backend-1",
-            "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
-            "cpu": 0,
-            "portMappings": [
-                {
-                    "containerPort": 8888,
-                    "hostPort": 8888,
-                    "protocol": "tcp"
-                }
-            ],
-            "essential": true,
-            "environment": [
-                {
-                    "name": "FIRST_SUPERUSER_PASSWORD",
-                    "value": "changethis"
-                },
-                {
-                    "name": "POSTGRES_USER",
-                    "value": "root_user"
-                },
-                {
-                    "name": "DOMAIN",
-                    "value": "backend.survey"
-                },
-                {
-                    "name": "ENVIRONMENT",
-                    "value": "local"
-                },
-                {
-                    "name": "POSTGRES_PASSWORD",
-                    "value": "77c340214e684859666941cc517cdadc"
-                },
-                {
-                    "name": "POSTGRES_PORT",
-                    "value": "5432"
-                },
-                {
-                    "name": "SECRET_KEY",
-                    "value": "d41d8cd98f00b204e9800998ecf8427e"
-                },
-                {
-                    "name": "POSTGRES_DB",
-                    "value": "postgres"
-                },
-                {
-                    "name": "FIRST_SUPERUSER",
-                    "value": "admin@example.com"
-                },
-                {
-                    "name": "POSTGRES_SERVER",
-                    "value": "survey-aws-database.cd00w0smo1rb.us-west-2.rds.amazonaws.com"
-                },
-                {
-                    "name": "PROJECT_NAME",
-                    "value": "Survey"
-                },
-                {
-                    "name": "BACKEND_CORS_ORIGINS",
-                    "value": "http://backend.survey,http://localhost,http://localhost:5173,https://localhost,https://localhost:5173,http://localhost.tiangolo.com"
-                }
-            ],
-            "environmentFiles": [],
-            "mountPoints": [],
-            "volumesFrom": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/backend",
-                    "awslogs-region": "us-west-2",
-                    "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
+[
+    {
+        "name": "backend-1",
+        "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
+        "cpu": 0,
+        "portMappings": [
+            {
+                "containerPort": 8888,
+                "hostPort": 8888,
+                "protocol": "tcp"
+            }
+        ],
+        "essential": true,
+        "environment": [
+            {
+                "name": "FIRST_SUPERUSER_PASSWORD",
+                "value": "changethis"
             },
-            "systemControls": []
+            {
+                "name": "POSTGRES_USER",
+                "value": "root_user"
+            },
+            {
+                "name": "DOMAIN",
+                "value": "backend.survey"
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "/ecs/backend",
+                "awslogs-region": "us-west-2",
+                "awslogs-stream-prefix": "ecs"
+            }
         }
-    ]
-}
+    }
+]
