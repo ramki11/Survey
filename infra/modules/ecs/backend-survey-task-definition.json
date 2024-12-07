@@ -1,15 +1,14 @@
-"containerDefinitions": [
+{
+    "containerDefinitions": [
         {
             "name": "backend-1",
             "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "80",
                     "containerPort": 8888,
                     "hostPort": 8888,
-                    "protocol": "tcp",
-                    "appProtocol": "http"
+                    "protocol": "tcp"
                 }
             ],
             "essential": true,
@@ -70,9 +69,6 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-group": "/ecs/backend",
-                    "mode": "non-blocking",
-                    "awslogs-create-group": "true",
-                    "max-buffer-size": "25m",
                     "awslogs-region": "us-west-2",
                     "awslogs-stream-prefix": "ecs"
                 },
@@ -81,3 +77,4 @@
             "systemControls": []
         }
     ]
+}
