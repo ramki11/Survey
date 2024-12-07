@@ -17,9 +17,9 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = "backend-survey-task-definition"
+  family = "${var.project_name}-${var.app_name}-task"
   container_definitions    = file("./modules/ecs/backend-survey-task-definition.json")
-  task_role_arn            = "arn:aws:iam::913524926070:role/ecsTaskExecutionRole"
+  task_role_arn            = var.ecs_task_execution_role_arn
   execution_role_arn       = var.ecs_task_execution_role_arn
 
   requires_compatibilities = ["FARGATE"]
@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "this" {
  
 
   tags = {
-    Name = "${var.project_name}-ecs-task_definition"
+    Name = "${var.project_name}-${var.app_name}-ecs-task_definition"
   }
 }
 
@@ -93,7 +93,7 @@ data "aws_ecs_task_definition" "main" {
 }
 
 resource "aws_ecs_service" "this" {
-  name                 = "${var.project_name}-ecs-service"
+  name                 = "${var.project_name}-${var.app_name}-ecs-service"
   cluster              = aws_ecs_cluster.this.id
   task_definition      = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.main.revision)}"
   scheduling_strategy  = "REPLICA"
