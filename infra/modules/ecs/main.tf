@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         "portMappings" : [
           {
-            "containerPort" : 3000
+            "containerPort" : 8888
 
           }
         ],
