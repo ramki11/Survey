@@ -34,14 +34,14 @@ resource "aws_security_group" "load_balancer" {
 
 # Create alb
 resource "aws_lb" "alb" {
-  name               = "${var.app_name}-alb"
+  name               = "${var.project_name}-${var.app_name}-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.load_balancer.id]
   subnets            = [for subnet in var.public_subnets : subnet.id]
 
   tags = {
-    Name = "${var.app_name}-alb"
+    Name = "${var.project_name}-${var.app_name}-alb"
   }
 }
 
@@ -82,7 +82,7 @@ resource "aws_alb_listener" "https" {
 }
 */
 resource "aws_lb_target_group" "this" {
-  name        = "${var.project_name}-sample-app-tg"
+  name        = "${var.project_name}-${var.app_name}-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
@@ -104,7 +104,7 @@ resource "aws_lb_target_group" "this" {
   ]
 
   tags = {
-    Name = "${var.project_name}-sample-app-lb-tg"
+    Name = "${var.project_name}-${var.app_name}-tg"
   }
 }
 
