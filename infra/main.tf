@@ -86,7 +86,7 @@ module "ecs" {
   image_tag                       = var.image_tag
 }
 
-
+/*
 
 ##FRONTEND
 # Create application load balancer
@@ -114,3 +114,4 @@ module "ecs" {
   image_path                      =  "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend"
   image_tag                       = var.image_tag
 }
+*/
