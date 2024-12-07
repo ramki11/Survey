@@ -35,8 +35,8 @@ module "route53" {
   hosted_zone_domain         = local.app_hosted_zone_domain
   hosted_zone_name           = var.app_hosted_zone_name
   subdomain                  = var.app_subdomain
-  a_record_alias_domain_name = module.alb.alb_dns_name
-  a_record_alias_zone_id     = module.alb.alb_zone_id
+  a_record_alias_domain_name = module.alb-backend.alb_dns_name
+  a_record_alias_zone_id     = module.alb-backend.alb_zone_id
 }
 
 # Create acm certificate
