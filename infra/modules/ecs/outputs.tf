@@ -5,5 +5,5 @@ output "ecs_service_security_group_id" {
 
 
 output "container_definitions" {
-    value = file("./modules/ecs/backend-survey-task-definition.json")
+    value =  file("${path.module}/${var.project_name}-${var.app_name}-task-definition.json")
 }
