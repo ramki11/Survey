@@ -17,6 +17,25 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 }
 
 resource "aws_ecs_task_definition" "this" {
+  family                   = "backend-survey-task-definition"
+  container_definitions    = file("${path.module}/backend-survey-task-definition.json")
+  task_role_arn            = "arn:aws:iam::913524926070:role/ecsTaskExecutionRole"
+  execution_role_arn       = var.ecs_task_execution_role_arn
+
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "512"
+  memory                   = "1024"
+ 
+
+  tags = {
+    Name = "${var.project_name}-ecs-task_definition"
+  }
+}
+
+
+/* ----------------------------------------------
+resource "aws_ecs_task_definition" "this" {
   family = "${var.project_name}-task"
 
   container_definitions = jsonencode(
@@ -56,6 +75,10 @@ resource "aws_ecs_task_definition" "this" {
     Name = "${var.project_name}-ecs-task_definition"
   }
 }
+
+*/
+
+
 
 resource "aws_cloudwatch_log_group" "this" {
   name = "${var.project_name}-${var.app_name}-logs"
