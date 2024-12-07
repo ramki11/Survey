@@ -1,0 +1,138 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-west-2:913524926070:task-definition/backend-survey-task-definition:4",
+    "containerDefinitions": [
+        {
+            "name": "backend-1",
+            "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "80",
+                    "containerPort": 8888,
+                    "hostPort": 8888,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "FIRST_SUPERUSER_PASSWORD",
+                    "value": "changethis"
+                },
+                {
+                    "name": "POSTGRES_USER",
+                    "value": "root_user"
+                },
+                {
+                    "name": "DOMAIN",
+                    "value": "backend.survey"
+                },
+                {
+                    "name": "ENVIRONMENT",
+                    "value": "local"
+                },
+                {
+                    "name": "POSTGRES_PASSWORD",
+                    "value": "77c340214e684859666941cc517cdadc"
+                },
+                {
+                    "name": "POSTGRES_PORT",
+                    "value": "5432"
+                },
+                {
+                    "name": "SECRET_KEY",
+                    "value": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "name": "POSTGRES_DB",
+                    "value": "postgres"
+                },
+                {
+                    "name": "FIRST_SUPERUSER",
+                    "value": "admin@example.com"
+                },
+                {
+                    "name": "POSTGRES_SERVER",
+                    "value": "survey-aws-database.cd00w0smo1rb.us-west-2.rds.amazonaws.com"
+                },
+                {
+                    "name": "PROJECT_NAME",
+                    "value": "Survey"
+                },
+                {
+                    "name": "BACKEND_CORS_ORIGINS",
+                    "value": "http://backend.survey,http://localhost,http://localhost:5173,https://localhost,https://localhost:5173,http://localhost.tiangolo.com"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/backend",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "backend-survey-task-definition",
+    "taskRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::913524926070:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 4,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "registeredAt": "2024-11-21T03:00:11.516Z",
+    "registeredBy": "arn:aws:iam::913524926070:user/ramki.ratnakara",
+    "tags": []
+}
