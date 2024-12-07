@@ -77,3 +77,10 @@ variable "image_tag" {
   type        = string
   default     = "latest"
 }
+
+variable "backend_container_definitions_file" {
+  description = "Path to the ECS container definitions file"
+  type        = string
+  default     = "./modules/ecs/backend-survey-task-definition.json" # Default value
+}
+
