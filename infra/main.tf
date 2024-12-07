@@ -28,15 +28,15 @@ module "nat_gateway" {
 module "iam" {
   source = "./modules/iam"
 }
-
+/*
 module "route53" {
   source                     = "./modules/route53"
   root_domain                = var.root_domain
   hosted_zone_domain         = local.app_hosted_zone_domain
   hosted_zone_name           = var.app_hosted_zone_name
   subdomain                  = var.app_subdomain
-  a_record_alias_domain_name = module.alb-backend.alb_dns_name
-  a_record_alias_zone_id     = module.alb-backend.alb_zone_id
+  a_record_alias_domain_name = module.alb-frontend.alb_dns_name
+  a_record_alias_zone_id     = module.alb-frontend.alb_zone_id
 }
 
 # Create acm certificate
@@ -56,7 +56,7 @@ module "acm" {
     module.route53.hosted_zone
   ]
 }
-
+*/
 
 
 # Create application load balancer
@@ -86,11 +86,11 @@ module "ecs-backend" {
   image_tag                       = var.image_tag
 }
 
-/*
+
 
 ##FRONTEND
 # Create application load balancer
-module "alb" {
+module "alb-frontend" {
   source              = "./modules/alb"
   public_subnets      = module.vpc.public_subnets
   vpc_id              = module.vpc.vpc_id
@@ -101,17 +101,17 @@ module "alb" {
 }
 
 # Create ecs cluster, service and task definition
-module "ecs" {
+module "ecs-frontend" {
   source                          = "./modules/ecs"
   region                          = var.region
   project_name                    = var.project_name
   app_name                        = "frontend"
   private_app_subnets             = module.vpc.private_app_subnets
   vpc_id                          = module.vpc.vpc_id
-  load_balancer_security_group_id = module.alb.alb_security_group_id
-  target_group_arn                = module.alb.target_group_arn
+  load_balancer_security_group_id = module.alb-frontend.alb_security_group_id
+  target_group_arn                = module.alb-frontend.target_group_arn
   ecs_task_execution_role_arn     = module.iam.ecs_task_execution_role_arn
   image_path                      =  "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend"
   image_tag                       = var.image_tag
 }
-*/
+
