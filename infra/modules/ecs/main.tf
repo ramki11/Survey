@@ -1,8 +1,8 @@
 resource "aws_ecs_cluster" "this" {
-  name = "ecs-${var.project_name}-${var.app_name}"
+  name = "ecs-${var.project_name}"
 
   tags = {
-    Name = "ecs-${var.project_name}-${var.app_name}"
+    Name = "ecs-${var.project_name}"
   }
 }
 
