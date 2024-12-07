@@ -1,6 +1,6 @@
 [
     {
-        "name": "survey-backend-task-definition",
+        "name": "survey-backend-container",
         "image": "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend:latest",
         "cpu": 0,
         "portMappings": [
