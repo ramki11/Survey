@@ -85,3 +85,32 @@ module "ecs" {
   image_path                      =  "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_backend"
   image_tag                       = var.image_tag
 }
+
+
+
+##FRONTEND
+# Create application load balancer
+module "alb" {
+  source              = "./modules/alb"
+  public_subnets      = module.vpc.public_subnets
+  vpc_id              = module.vpc.vpc_id
+  project_name        = var.project_name
+  app_name            = "frontend"
+###  acm_certificate_arn = "arn:aws:acm:us-west-2:913524926070:certificate/8c3ddb9c-a18c-4af0-a5ac-1f23c967979d"
+###module.acm.acm_certificate_arn
+}
+
+# Create ecs cluster, service and task definition
+module "ecs" {
+  source                          = "./modules/ecs"
+  region                          = var.region
+  project_name                    = var.project_name
+  app_name                        = "frontend"
+  private_app_subnets             = module.vpc.private_app_subnets
+  vpc_id                          = module.vpc.vpc_id
+  load_balancer_security_group_id = module.alb.alb_security_group_id
+  target_group_arn                = module.alb.target_group_arn
+  ecs_task_execution_role_arn     = module.iam.ecs_task_execution_role_arn
+  image_path                      =  "913524926070.dkr.ecr.us-west-2.amazonaws.com/survey_frontend"
+  image_tag                       = var.image_tag
+}
