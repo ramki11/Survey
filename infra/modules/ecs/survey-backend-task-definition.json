@@ -60,7 +60,7 @@
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
-                "awslogs-group": "/ecs/survey/backend",
+                "awslogs-group": "survey-backend-logs",
                 "awslogs-region": "us-west-2",
                 "awslogs-stream-prefix": "ecs"
             }
